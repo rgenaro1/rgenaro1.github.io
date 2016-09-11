@@ -1,0 +1,10 @@
+_posts/ideas
+
+*.swp
+
+/_site/
+/images/latex/
+
+bower_components
+
+.jekyll-metadata
