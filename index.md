@@ -1,6 +1,6 @@
 ---
 layout: index
-title: Brandon Amos
+title: Genaro Rodriguez
 ---
 
 **I am looking for a machine learning research internship
