@@ -3,8 +3,7 @@ layout: index
 title: Genaro Rodriguez
 ---
 
-**I am looking for a machine learning research internship
-for the summer of 2017.**
+**I am looking.**
 
 I am a third-year Computer Science Ph.D. student
 at Carnegie Mellon University.
@@ -21,7 +20,7 @@ uses deep learning.
 
 {% include cv.md %}
 
-## <i class="fa fa-chevron-right"></i> Recent Blog Posts
+## <i class="fa fa-chevron-right"></i> Post recientes
 
 <table class="table table-hover">
   {% for post in site.posts limit: 5 %}
@@ -35,7 +34,7 @@ uses deep learning.
 </table>
 <h4><a href="/blog">View all</a></h4>
 
-## <i class="fa fa-chevron-right"></i> Fun Side Projects
+## <i class="fa fa-chevron-right"></i> Proyectos
 + [CS conference tracker](https://github.com/bamos/conference-tracker).
 + [SnowGlobe](https://github.com/bamos/snowglobe):
   Haskell-driven, small-scale web analytics with minimal configuration.
