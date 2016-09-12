@@ -4,26 +4,26 @@
   <tr>
     <td class="col-md-3">Aug 2014 - Present</td>
     <td>
-        <strong>Ph.D. in Computer Science</strong>
+        <strong>Mg. Matematicas</strong>
         <br>
-      Carnegie Mellon University
+      Escuela de postgrado Universidad Nacional de Trujillo
     </td>
   </tr>
   <tr>
-    <td class="col-md-3">Aug 2014 - May 2016</td>
+    <td class="col-md-3">Octubre 2012 - Agosto 2013</td>
     <td>
-        <strong>M.S. in Computer Science</strong>
+        <strong>Diplomado en Direccion de Proyectos </strong>
         <br>
-      Carnegie Mellon University
+      Pontificia Universidad Catolica del Peru
     </td>
   </tr>
   <tr>
-    <td class="col-md-3">Aug 2011 - May 2014</td>
+    <td class="col-md-3">Abril 2006 - Diciembre 2010</td>
     <td>
-        <strong>B.S. in Computer Science</strong>
-          (3.99/4.00)
+        <strong>Ingeniería Industrial</strong>
+          (Quinto superior)
         <br>
-      Virginia Tech
+      Universidad Nacional de Trujillo
     </td>
   </tr>
   <tr>
@@ -35,7 +35,7 @@
 </table>
 
 
-## <i class="fa fa-chevron-right"></i> Research Experience
+## <i class="fa fa-chevron-right"></i> Investigacion
 <table class="table table-hover">
 <tr>
   <td class='col-md-3'>Apr 2016 - Present</td>
@@ -75,7 +75,7 @@
 </table>
 
 
-## <i class="fa fa-chevron-right"></i> Publications
+## <i class="fa fa-chevron-right"></i> Publicaciones
 
 <a href="https://scholar.google.com/citations?user=CZwrwHAAAAAJ" class="btn btn-primary" style="padding: 0.3em;">
   <i class="ai ai-google-scholar"></i> Google Scholar
@@ -532,7 +532,7 @@ biology problems is given.
 </table>
 
 
-## <i class="fa fa-chevron-right"></i> Teaching Experience
+## <i class="fa fa-chevron-right"></i> Experiencia en docencia
 <table class="table table-hover">
 <tr>
   <td class='col-md-1'>S2016</td>
