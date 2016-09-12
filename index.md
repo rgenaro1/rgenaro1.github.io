@@ -5,18 +5,9 @@ title: Genaro Rodriguez
 
 **I am looking.**
 
-I am a third-year Computer Science Ph.D. student
-at Carnegie Mellon University.
-I work with [Zico Kolter](http://zicokolter.com)
-on machine learning and optimization and am supported
-by an NSF graduate research fellowship.
-My research interests include applying theory and statistics
-to modeling problems in machine learning and
-computer vision, particularly in deep learning.
-I am the author of
-[OpenFace](https://cmusatyalab.github.io/openface/),
-which is an open source face recognition project that
-uses deep learning.
+Soy ingeniero industrial graduado en la Universidad Nacional de Trujillo.
+HE trabajado con [Zico Kolter](http://zicokolter.com)
+
 
 {% include cv.md %}
 
