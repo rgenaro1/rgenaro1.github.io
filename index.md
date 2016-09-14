@@ -3,10 +3,8 @@ layout: index
 title: Genaro Rodriguez
 ---
 
-**I am looking.**
 
-Soy ingeniero industrial graduado en la Universidad Nacional de Trujillo.
-HE trabajado con [Zico Kolter](http://zicokolter.com)
+Soy ingeniero industrial graduado en la Universidad Nacional de Trujillo, tengo expereiencia y capacitación en gestión de proyectos y en manufactura. 
 
 
 {% include cv.md %}
