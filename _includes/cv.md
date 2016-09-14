@@ -27,11 +27,15 @@
     </td>
   </tr>
   <tr>
-    <td class="col-md-3">May 2011</td>
+    <td class="col-md-3">Abril 2011</td>
     <td>
-      Northside High School (Roanoke, Virginia)
+        <strong>Programa de iniciación a la vida empresarial PIVE 2011 </strong>
+          (Tercio Superior)
+        <br>
+      Universidad de Piura - UDEP
     </td>
   </tr>
+ 
 </table>
 
 
@@ -51,13 +55,7 @@
     Machine learning, computer vision, and mobile computing
   </td>
 </tr>
-<tr>
-  <td class='col-md-3'>May 2012 - May 2014</td>
-  <td>
-    <strong>Virginia Tech</strong>, Prof. Jules White <br>
-    Mobile computing, cyber-physical systems, and security
-  </td>
-</tr>
+
 <tr>
   <td class='col-md-3'>Jan 2013 - May 2014</td>
   <td>
