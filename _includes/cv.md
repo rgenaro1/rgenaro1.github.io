@@ -70,8 +70,47 @@
     Cursos:
   </td>
 </tr>
+
+<tr>
+  <td class='col-md-3'>Mar 2011 - Dic 2011</td>
+  <td>
+    <strong>Asistente DPCP</strong>, Servicios Industriales de la Marina S.A. (SIMA - CHIMBOTE) <br>
+        Planificación y control de proyectos de contrucción naval
+  </td>
+</tr>
+<tr>
+
 </table>
 
+## <i class="fa fa-chevron-right"></i> Cursos
+<table class="table table-hover">
+<tr>
+  <td class='col-md-3'>May 2014 - Aug 2014</td>
+  <td><strong>Adobe Research</strong>, Data Scientist Intern</td>
+</tr>
+</table>
+
+## <i class="fa fa-chevron-right"></i> Intereses
+<table class="table table-hover">
+<tr>
+  <td class='col-md-2'>Languages</td>
+  <td markdown="1">
+C, C++, CSS, HTML, JavaScript, LaTeX, *Mathematica*, Python, R.
+  </td>
+</tr>
+<tr>
+  <td class='col-md-2'>Frameworks</td>
+  <td markdown="1">
+Caffe, Node.js, NumPy, TensorFlow, Torch7, Pandas, SciPy, scikit-learn, scikit-image, Julia.
+  </td>
+</tr>
+<tr>
+  <td class='col-md-2'>Systems</td>
+  <td markdown="1">
+Linux, OSX, Windows
+  </td>
+</tr>
+</table>
 
 ## <i class="fa fa-chevron-right"></i> Publicaciones
 
@@ -530,109 +569,13 @@ biology problems is given.
 </table>
 
 
-## <i class="fa fa-chevron-right"></i> Experiencia en docencia
-<table class="table table-hover">
-<tr>
-  <td class='col-md-1'>S2016</td>
-  <td><strong>Distributed Systems</strong> (CMU 15-440/640), TA</td>
-</tr>
-<tr>
-  <td class='col-md-1'>S2013</td>
-  <td><strong>Software Design and Data Structures</strong> (VT CS 2114), TA</td>
-</tr>
-</table>
-
-
-## <i class="fa fa-chevron-right"></i> Industry Experience
-<table class="table table-hover">
-<tr>
-  <td class='col-md-3'>May 2014 - Aug 2014</td>
-  <td><strong>Adobe Research</strong>, Data Scientist Intern</td>
-</tr>
-<tr>
-  <td class='col-md-3'>Dec 2013 - Jan 2014</td>
-  <td><strong>Snowplow Analytics</strong>, Software Engineer Intern</td>
-</tr>
-<tr>
-  <td class='col-md-3'>May 2013 - Aug 2013</td>
-  <td><strong>Qualcomm</strong>, Software Engineer Intern</td>
-</tr>
-<tr>
-  <td class='col-md-3'>May 2012 - Aug 2012</td>
-  <td><strong>Phoenix Integration</strong>, Software Engineer Intern</td>
-</tr>
-<tr>
-  <td class='col-md-3'>Jan 2011 - Aug 2011</td>
-  <td><strong>Sunapsys</strong>, Network Administrator Intern</td>
-</tr>
-</table>
-
-
-## <i class="fa fa-chevron-right"></i> Honors & Awards
+## <i class="fa fa-chevron-right"></i> Reconocimientos y premios
 <table class="table table-hover">
 <tr>
   <td class='col-md-2'>2016 - 2019</td>
   <td>
     NSF Graduate Research Fellowship
     <!--  -->
-  </td>
-</tr>
-<tr>
-  <td class='col-md-2'>2014</td>
-  <td>
-    1st Place Undergraduate Senior Capstone Award, Virginia Tech Computer Science
-    <!--  -->
-  </td>
-</tr>
-<tr>
-  <td class='col-md-2'>2014</td>
-  <td>
-    David Heilman Research Award, Virginia Tech Computer Science
-    <!--  -->
-  </td>
-</tr>
-<tr>
-  <td class='col-md-2'>2014</td>
-  <td>
-    Senior Scholar Award, Virginia Tech Computer Science
-    <!--  -->
-  </td>
-</tr>
-<tr>
-  <td class='col-md-2'>2014</td>
-  <td>
-    Honorable Mention, CRA Outstanding Undergraduate Researcher Award
-    <!--  -->
-  </td>
-</tr>
-<tr>
-  <td class='col-md-2'>2011 - 2014</td>
-  <td>
-    Awarded eight undergraduate merit scholarships
-    <!--  -->
-  </td>
-</tr>
-</table>
-
-
-## <i class="fa fa-chevron-right"></i> Skills
-<table class="table table-hover">
-<tr>
-  <td class='col-md-2'>Languages</td>
-  <td markdown="1">
-Bash, C, C++, CSS, Fortran, Haskell, HTML, Java, JavaScript, LaTeX, Lua, Make, *Mathematica*, Python, R, Scala
-  </td>
-</tr>
-<tr>
-  <td class='col-md-2'>Frameworks</td>
-  <td markdown="1">
-Akka, Android SDK/NDK, Caffe, Node.js, NumPy, TensorFlow, Torch7, Pandas, SciPy, scikit-learn, Spark, Spray
-  </td>
-</tr>
-<tr>
-  <td class='col-md-2'>Systems</td>
-  <td markdown="1">
-Linux, OSX
   </td>
 </tr>
 </table>
