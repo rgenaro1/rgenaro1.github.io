@@ -39,35 +39,35 @@
 </table>
 
 
-## <i class="fa fa-chevron-right"></i> Investigacion
+## <i class="fa fa-chevron-right"></i> Experiencia profesional
 <table class="table table-hover">
 <tr>
-  <td class='col-md-3'>Apr 2016 - Present</td>
+  <td class='col-md-3'>Dic 2015 - Present</td>
   <td>
-    <strong>Carnegie Mellon University</strong>, Prof. Zico Kolter <br>
-    Machine learning and optimization
+    <strong>Jefe de Planta</strong>, SEGUSA S.A. <br>
+    Responsable de la produccion de planta
   </td>
 </tr>
 <tr>
-  <td class='col-md-3'>Aug 2014 - Apr 2016</td>
+  <td class='col-md-3'>Jun 2015 - Dic 2015</td>
   <td>
-    <strong>Carnegie Mellon University</strong>, Prof. Mahadev Satyanarayanan <br>
-    Machine learning, computer vision, and mobile computing
+    <strong>Coordinador de Producción</strong>, SEGUSA S.A. <br>
+    Reporte diario de producción
   </td>
 </tr>
 
 <tr>
-  <td class='col-md-3'>Jan 2013 - May 2014</td>
+  <td class='col-md-3'>Dic 2011 - May 2015</td>
   <td>
-    <strong>Virginia Tech</strong>, Prof. Layne Watson <br>
-    Scientific computing, global/stochastic optimization, and bioinformatics
+    <strong>Intendente de Planeamiento y Control de Producción</strong>, Servicios Industriales de la Marina S.A. (SIMA - CHIMBOTE) <br>
+        Planificación y control de proyectos de contrucción naval
   </td>
 </tr>
 <tr>
-  <td class='col-md-3'>Nov 2012 - Mar 2014</td>
+  <td class='col-md-3'>Ene 2013 - Ago 2013</td>
   <td>
-    <strong>Virginia Tech</strong>, Prof. Binoy Ravindran <br>
-    Heterogeneous compilers
+    <strong>Docente</strong>, Universidad Privada San Pedro <br>
+    Cursos:
   </td>
 </tr>
 </table>
