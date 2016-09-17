@@ -40,6 +40,7 @@
 
 
 ## <i class="fa fa-chevron-right"></i> Experiencia profesional
+
 <table class="table table-hover">
     <tr>
       <td class='col-md-3'>Dic 2015 - Present</td>
@@ -79,7 +80,6 @@
       </td>
     </tr>
     <tr>
-
 </table>
 
 
