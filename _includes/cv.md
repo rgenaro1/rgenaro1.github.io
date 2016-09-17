@@ -79,7 +79,7 @@
             Planificación y control de proyectos de contrucción naval
       </td>
     </tr>
-    <tr>
+
 </table>
 
 
