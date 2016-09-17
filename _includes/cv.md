@@ -106,6 +106,140 @@ Linux, OSX, Windows
 </tr>
 </table>
 
+## <i class="fa fa-chevron-right"></i> Cursos
+
+### Coursera
+<table class="table table-hover">
+<tr>
+  <td class='col-md-2'>Languages</td>
+  <td markdown="1">
+C, C++, CSS, HTML, JavaScript, LaTeX, *Mathematica*, Python, R.
+  </td>
+</tr>
+<tr>
+  <td class='col-md-2'>Frameworks</td>
+  <td markdown="1">
+Caffe, Node.js, NumPy, TensorFlow, Torch7, Pandas, SciPy, scikit-learn, scikit-image, Julia.
+  </td>
+</tr>
+<tr>
+  <td class='col-md-2'>Systems</td>
+  <td markdown="1">
+Linux, OSX, Windows
+  </td>
+</tr>
+</table>
+
+### Edx
+<table class="table table-hover">
+<tr>
+  <td class='col-md-2'>Languages</td>
+  <td markdown="1">
+C, C++, CSS, HTML, JavaScript, LaTeX, *Mathematica*, Python, R.
+  </td>
+</tr>
+<tr>
+  <td class='col-md-2'>Frameworks</td>
+  <td markdown="1">
+Caffe, Node.js, NumPy, TensorFlow, Torch7, Pandas, SciPy, scikit-learn, scikit-image, Julia.
+  </td>
+</tr>
+<tr>
+  <td class='col-md-2'>Systems</td>
+  <td markdown="1">
+Linux, OSX, Windows
+  </td>
+</tr>
+</table>
+
+### Udacity
+<table class="table table-hover">
+<tr>
+  <td class='col-md-2'>Languages</td>
+  <td markdown="1">
+C, C++, CSS, HTML, JavaScript, LaTeX, *Mathematica*, Python, R.
+  </td>
+</tr>
+<tr>
+  <td class='col-md-2'>Frameworks</td>
+  <td markdown="1">
+Caffe, Node.js, NumPy, TensorFlow, Torch7, Pandas, SciPy, scikit-learn, scikit-image, Julia.
+  </td>
+</tr>
+<tr>
+  <td class='col-md-2'>Systems</td>
+  <td markdown="1">
+Linux, OSX, Windows
+  </td>
+</tr>
+</table>
+### Tecsup
+<table class="table table-hover">
+<tr>
+  <td class='col-md-2'>Languages</td>
+  <td markdown="1">
+C, C++, CSS, HTML, JavaScript, LaTeX, *Mathematica*, Python, R.
+  </td>
+</tr>
+<tr>
+  <td class='col-md-2'>Frameworks</td>
+  <td markdown="1">
+Caffe, Node.js, NumPy, TensorFlow, Torch7, Pandas, SciPy, scikit-learn, scikit-image, Julia.
+  </td>
+</tr>
+<tr>
+  <td class='col-md-2'>Systems</td>
+  <td markdown="1">
+Linux, OSX, Windows
+  </td>
+</tr>
+</table>
+
+### Senati
+<table class="table table-hover">
+<tr>
+  <td class='col-md-2'>Languages</td>
+  <td markdown="1">
+C, C++, CSS, HTML, JavaScript, LaTeX, *Mathematica*, Python, R.
+  </td>
+</tr>
+<tr>
+  <td class='col-md-2'>Frameworks</td>
+  <td markdown="1">
+Caffe, Node.js, NumPy, TensorFlow, Torch7, Pandas, SciPy, scikit-learn, scikit-image, Julia.
+  </td>
+</tr>
+<tr>
+  <td class='col-md-2'>Systems</td>
+  <td markdown="1">
+Linux, OSX, Windows
+  </td>
+</tr>
+</table>
+
+### Otros
+<table class="table table-hover">
+<tr>
+  <td class='col-md-2'>Languages</td>
+  <td markdown="1">
+C, C++, CSS, HTML, JavaScript, LaTeX, *Mathematica*, Python, R.
+  </td>
+</tr>
+<tr>
+  <td class='col-md-2'>Frameworks</td>
+  <td markdown="1">
+Caffe, Node.js, NumPy, TensorFlow, Torch7, Pandas, SciPy, scikit-learn, scikit-image, Julia.
+  </td>
+</tr>
+<tr>
+  <td class='col-md-2'>Systems</td>
+  <td markdown="1">
+Linux, OSX, Windows
+  </td>
+</tr>
+</table>
+
+
 ## <i class="fa fa-chevron-right"></i> Publicaciones
 
 <a href="https://scholar.google.com/citations?user=CZwrwHAAAAAJ" class="btn btn-primary" style="padding: 0.3em;">
