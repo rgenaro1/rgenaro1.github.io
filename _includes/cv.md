@@ -67,7 +67,7 @@
       <td class='col-md-3'>Ene 2013 - Ago 2013</td>
       <td>
         <strong>Docente</strong>, Universidad Privada San Pedro <br>
-        Cursos:
+            Cursos:
       </td>
     </tr>
 
