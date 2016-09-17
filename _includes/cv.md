@@ -82,13 +82,7 @@
 
 </table>
 
-## <i class="fa fa-chevron-right"></i> Cursos
-<table class="table table-hover">
-<tr>
-  <td class='col-md-3'>May 2014 - Aug 2014</td>
-  <td><strong>Adobe Research</strong>, Data Scientist Intern</td>
-</tr>
-</table>
+
 
 ## <i class="fa fa-chevron-right"></i> Intereses
 <table class="table table-hover">
