@@ -1,12 +1,12 @@
-## <i class="fa fa-chevron-right"></i> Education
+## <i class="fa fa-chevron-right"></i> Educación
 
 <table class="table table-hover">
   <tr>
-    <td class="col-md-3">Aug 2014 - Present</td>
+    <td class="col-md-3">Abr 2017 - Presente</td>
     <td>
         <strong>Mg. Matematicas</strong>
         <br>
-      Escuela de postgrado Universidad Nacional de Trujillo
+      Escuela de Postgrado Universidad Nacional de Trujillo
     </td>
   </tr>
   <tr>
@@ -27,7 +27,7 @@
     </td>
   </tr>
   <tr>
-    <td class="col-md-3">Abril 2011</td>
+    <td class="col-md-3">Mar 2011</td>
     <td>
         <strong>Programa de iniciación a la vida empresarial PIVE 2011 </strong>
           (Tercio Superior)
@@ -46,14 +46,14 @@
       <td class='col-md-3'>Dic 2015 - Present</td>
       <td>
         <strong>Jefe de Planta</strong>, SEGUSA S.A. <br>
-        Responsable de la produccion de planta
+        Responsable de la produccion de planta: Cantidad, calidad y costo
       </td>
     </tr>
     <tr>
       <td class='col-md-3'>Jun 2015 - Dic 2015</td>
       <td>
         <strong>Coordinador de Producción</strong>, SEGUSA S.A. <br>
-        Reporte diario de producción
+        Reporte diario de producción, KPI, revisión de estudios de tiempos y fórmulas
       </td>
     </tr>
 
@@ -68,15 +68,15 @@
       <td class='col-md-3'>Ene 2013 - Ago 2013</td>
       <td>
         <strong>Docente</strong>, Universidad Privada San Pedro <br>
-            Cursos:
+            Cursos: Logística, Gestión de la Cadena de Suministro, Planeamiento y Control de Operaciones.
       </td>
     </tr>
 
     <tr>
       <td class='col-md-3'>Mar 2011 - Dic 2011</td>
       <td>
-        <strong>Asistente DPCP</strong>, Servicios Industriales de la Marina S.A. (SIMA - CHIMBOTE) <br>
-            Planificación y control de proyectos de contrucción naval
+        <strong>Asistente DPCP - Prácticas profesionales</strong>, Servicios Industriales de la Marina S.A. (SIMA - CHIMBOTE) <br>
+            Colaboración con responsable de planificación y control de proyectos de contrucción naval
       </td>
     </tr>
 
@@ -89,7 +89,7 @@
 <tr>
   <td class='col-md-2'>Languages</td>
   <td markdown="1">
-C, C++, CSS, HTML, JavaScript, LaTeX, *Mathematica*, Python, R.
+C++, Java, LaTeX, Python, R, Julia, Matlab.
   </td>
 </tr>
 <tr>
@@ -173,6 +173,7 @@ Linux, OSX, Windows
   </td>
 </tr>
 </table>
+
 ### Tecsup
 <table class="table table-hover">
 <tr>
