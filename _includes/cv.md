@@ -108,12 +108,15 @@ Linux, OSX, Windows
 
 ## <i class="fa fa-chevron-right"></i> Cursos
 
-### Coursera
+### MOOCs
 <table class="table table-hover">
 <tr>
-  <td class='col-md-2'>Languages</td>
+  <td class='col-md-2'>Machine Learning:</td>
   <td markdown="1">
-C, C++, CSS, HTML, JavaScript, LaTeX, *Mathematica*, Python, R.
+[Machine Learning]('https://www.coursera.org/account/accomplishments/certificate/8YG7Q8SGN7JD'),
+[Machine Learning Foundations: A Case Study Approach]('https://www.coursera.org/account/accomplishments/verify/59YF3FMJUETC'),
+CSS,
+HTML, JavaScript, LaTeX, *Mathematica*, Python, R.
   </td>
 </tr>
 <tr>
