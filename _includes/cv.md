@@ -115,22 +115,20 @@ Linux, OSX, Windows
   <td markdown="1">
 [Machine Learning]('https://www.coursera.org/account/accomplishments/certificate/8YG7Q8SGN7JD')<br>
 [Machine Learning Foundations: A Case Study Approach]('https://www.coursera.org/account/accomplishments/verify/59YF3FMJUETC')<br>
-CSS,
-HTML, JavaScript, LaTeX, *Mathematica*, Python, R.
+[Machine Learning: Regression]('https://www.coursera.org/account/accomplishments/certificate/DE93DYDGD45A')<br>
+[Математика и Python для анализа данных]('https://www.coursera.org/account/accomplishments/certificate/CDSDCYQB37WA')<br>
+[Statistical Learning]('https://drive.google.com/open?id=0BxOYiFFXo9jmM0tqT2FGLTduV28')<br>
+[Data Science and Machine Learning Essentials]('https://drive.google.com/open?id=1aCYO_N3cWMSlAtVVRKQ6cINLDs7UIQwMt4uCjmm6CK_-CSHEktVZFsK9TI4XmLDkPNcFJGuCof1_mAZv')<br>
+[Excel for Data Analysis and Visualization]('https://drive.google.com/open?id=1NEqBLUa4lZM-sN636NHYrYjSh-q_68aqDhggXrhM0GsaEz0iqxySURZ0LufOsqOaMsgtNuMNtbiu0WoQ')
   </td>
 </tr>
 <tr>
-  <td class='col-md-2'>Frameworks</td>
+  <td class='col-md-2'>Otros</td>
   <td markdown="1">
 Caffe, Node.js, NumPy, TensorFlow, Torch7, Pandas, SciPy, scikit-learn, scikit-image, Julia.
   </td>
 </tr>
-<tr>
-  <td class='col-md-2'>Systems</td>
-  <td markdown="1">
-Linux, OSX, Windows
-  </td>
-</tr>
+
 </table>
 
 
