@@ -1,14 +1,7 @@
 ## <i class="fa fa-chevron-right"></i> Educación
 
 <table class="table table-hover">
-  <tr>
-    <td class="col-md-3">Abr 2017 - Presente</td>
-    <td>
-        <strong>Mg. Matematicas</strong>
-        <br>
-      Escuela de Postgrado Universidad Nacional de Trujillo
-    </td>
-  </tr>
+
   <tr>
     <td class="col-md-3">Octubre 2012 - Agosto 2013</td>
     <td>
@@ -95,7 +88,7 @@ C++, Java, LaTeX, Python, R, Julia, Matlab.
 <tr>
   <td class='col-md-2'>Frameworks</td>
   <td markdown="1">
-Caffe, Node.js, NumPy, TensorFlow, Torch7, Pandas, SciPy, scikit-learn, scikit-image, Julia.
+Caffe, NumPy, TensorFlow, Torch7, Pandas, SciPy, scikit-learn, scikit-image, Julia.
   </td>
 </tr>
 <tr>
@@ -125,7 +118,12 @@ Linux, OSX, Windows
 <tr>
   <td class='col-md-2'>Otros</td>
   <td markdown="1">
-Caffe, Node.js, NumPy, TensorFlow, Torch7, Pandas, SciPy, scikit-learn, scikit-image, Julia.
+[Introduction to Mathematical Thinking]('https://www.coursera.org/maestro/api/certificate/get_certificate?course_id=176')<br>
+[Introduction to R Programming]('https://drive.google.com/open?id=1o_QEIAVbQKjHtjVtPMwat1qmBGtrvipCA4KBiWs1sMY4J5eS0Fv63y9J9yNK0YvNGFRRp9qYuTraiSii')<br>
+[MCExam01x: Writing Exams for Science and  Engineering Courses]('https://drive.google.com/open?id=1veNvGVAVnlhU70N3hJcFki1aBkSOBQQWEmJz-DxGdgPJNOgsKXbKJuYlYZ4zDNLlV2SvS14WZOXAgbyU')<br>
+[Financial Analysis and Decision Making]('https://courses.edx.org/certificates/a9878d57fecf4ecc80d36cc67ba48421')<br>
+[ER22.1x: Justice HarvardX]('https://courses.edx.org/certificates/d2bd3dbc1fea4c4cb5ce864e4bd551b7')
+
   </td>
 </tr>
 
@@ -136,9 +134,9 @@ Caffe, Node.js, NumPy, TensorFlow, Torch7, Pandas, SciPy, scikit-learn, scikit-i
 ## <i class="fa fa-chevron-right"></i> Reconocimientos y premios
 <table class="table table-hover">
 <tr>
-  <td class='col-md-2'>2016 - 2019</td>
+  <td class='col-md-2'>2010</td>
   <td>
-    NSF Graduate Research Fellowship
+    Quinto Superior - Promoción 34 Universidad Nacional de Trujillo
     <!--  -->
   </td>
 </tr>
