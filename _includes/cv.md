@@ -113,8 +113,8 @@ Linux, OSX, Windows
 <tr>
   <td class='col-md-2'>Machine Learning:</td>
   <td markdown="1">
-[Machine Learning]('https://www.coursera.org/account/accomplishments/certificate/8YG7Q8SGN7JD'),
-[Machine Learning Foundations: A Case Study Approach]('https://www.coursera.org/account/accomplishments/verify/59YF3FMJUETC'),
+[Machine Learning]('https://www.coursera.org/account/accomplishments/certificate/8YG7Q8SGN7JD')<br>
+[Machine Learning Foundations: A Case Study Approach]('https://www.coursera.org/account/accomplishments/verify/59YF3FMJUETC')<br>
 CSS,
 HTML, JavaScript, LaTeX, *Mathematica*, Python, R.
   </td>
