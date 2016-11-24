@@ -1,11 +1,11 @@
 ==================================================================
-https://keybase.io/bamos
+https://keybase.io/
 --------------------------------------------------------------------
 
 I hereby claim:
 
   * I am an admin of https://bamos.github.io
-  * I am bamos (https://keybase.io/bamos) on keybase.
+  * I am bamos (https://keybase.io/) on keybase.
   * I have a public key with fingerprint 9C65 37B9 732B EBAC 744D  8973 E9B7 164C B72D 6B6F
 
 To claim this, I am signing this object:

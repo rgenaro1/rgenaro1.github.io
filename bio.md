@@ -1,1 +1,1 @@
-Genaro Rodriguez es un ingeniero industrial graduado en la Universidad Nacioanl de Trujillo
+Genaro Rodriguez es un ingeniero industrial graduado en la Universidad Nacional de Trujillo

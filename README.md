@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/bamos/bamos.github.io.svg?branch=master)](https://travis-ci.org/bamos/bamos.github.io)
+[![Build Status]
 
 # About
 This is the source code for my personal website.
