@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Genaro Yoel Rodríguez Hoyos — Ingeniero Industrial. Jefe de Planeamiento y Control de la Producción en JOLI JOLI." />
+<title>Genaro Rodríguez Hoyos — Ingeniero Industrial</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg:        #ffffff;
+    --bg-soft:   #fafafa;
+    --ink:       #1a1a1a;
+    --ink-2:     #3c3c3c;
+    --ink-3:     #5a5a5a;
+    --ink-4:     #888888;
+    --line:      #e6e6e6;
+    --line-2:    #f0f0f0;
+
+    /* Wolfram red — used as the single accent */
+    --red:       #DC0000;
+    --red-soft:  #B30000;
+    --red-bg:    #fff5f5;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.005em;
+  }
+
+  ::selection { background: var(--red); color: #fff; }
+
+  a { color: inherit; text-decoration: none; transition: color 180ms ease; }
+  a:hover { color: var(--red); }
+
+  /* ───────────────────────── Layout ───────────────────────── */
+  .container {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  /* ───────────────────────── Topbar ───────────────────────── */
+  .topbar {
+    padding: 24px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--line);
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .brand-mark {
+    width: 30px;
+    height: 34px;
+    flex-shrink: 0;
+  }
+  .brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+  }
+  .brand-text .name {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .brand-text .role {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-3);
+    letter-spacing: 0.02em;
+  }
+  .topbar nav {
+    display: flex;
+    gap: 28px;
+    font-size: 14px;
+    color: var(--ink-3);
+  }
+  .topbar nav a:hover { color: var(--red); }
+
+  /* ───────────────────────── Hero ───────────────────────── */
+  header.hero {
+    padding: 80px 0 64px;
+  }
+  .hero-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--red);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    background: var(--red-bg);
+    border-radius: 100px;
+    margin-bottom: 28px;
+  }
+  .hero-kicker::before {
+    content: "";
+    width: 6px; height: 6px;
+    background: var(--red);
+    border-radius: 50%;
+  }
+
+  h1.hero-name {
+    font-size: clamp(44px, 6.5vw, 76px);
+    font-weight: 600;
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+    color: var(--ink);
+    max-width: 920px;
+    margin-bottom: 24px;
+  }
+
+  .hero-tagline {
+    font-size: clamp(17px, 1.8vw, 20px);
+    color: var(--ink-2);
+    line-height: 1.55;
+    letter-spacing: -0.012em;
+    max-width: 720px;
+    margin-bottom: 56px;
+  }
+
+  /* Hero stats — "computed quick facts" */
+  .hero-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  .stat-pod {
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 20px 22px;
+  }
+  .stat-pod .stat-num {
+    font-size: 30px;
+    font-weight: 600;
+    color: var(--red);
+    line-height: 1;
+    margin-bottom: 8px;
+    letter-spacing: -0.025em;
+  }
+  .stat-pod .stat-num .unit {
+    font-size: 16px;
+    color: var(--ink-3);
+    font-weight: 500;
+    margin-left: 2px;
+  }
+  .stat-pod .stat-lbl {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-3);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    line-height: 1.4;
+  }
+
+  /* ───────────────────────── Section ───────────────────────── */
+  section {
+    padding: 72px 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .section-head {
+    margin-bottom: 40px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid var(--ink);
+  }
+  .section-head h2 {
+    font-size: clamp(24px, 3vw, 32px);
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+  }
+  .section-head h2 .section-num {
+    color: var(--red);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 18px;
+    margin-right: 14px;
+    font-weight: 500;
+    vertical-align: 2px;
+  }
+  .section-head .section-aside {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-4);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  /* ───────────────────────── About ───────────────────────── */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 48px;
+  }
+  .about-grid .prose p {
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--ink-2);
+    margin-bottom: 18px;
+    letter-spacing: -0.008em;
+  }
+  .about-grid .prose strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .about-grid .prose .red {
+    color: var(--red);
+    font-weight: 600;
+  }
+
+  .quick-facts {
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 24px;
+    height: fit-content;
+  }
+  .quick-facts .qf-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  .quick-facts .qf-row {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 12px;
+    padding: 8px 0;
+    align-items: baseline;
+  }
+  .quick-facts .qf-row .qf-k {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-3);
+    letter-spacing: 0.02em;
+  }
+  .quick-facts .qf-row .qf-v {
+    font-size: 14px;
+    color: var(--ink);
+    font-weight: 500;
+    letter-spacing: -0.005em;
+  }
+
+  /* ───────────────────────── Experience ───────────────────────── */
+  .roles {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .role {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 32px;
+    padding: 24px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    transition: border-color 200ms ease;
+  }
+  .role:hover { border-color: var(--ink-4); }
+
+  .role .when {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-3);
+    letter-spacing: 0.02em;
+    line-height: 1.7;
+  }
+  .role .when .now {
+    display: inline-block;
+    color: var(--red);
+    font-weight: 500;
+    background: var(--red-bg);
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-top: 4px;
+  }
+
+  .role .body h3 {
+    font-size: 19px;
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--ink);
+    letter-spacing: -0.018em;
+    margin-bottom: 4px;
+  }
+  .role .body .org {
+    font-size: 13px;
+    color: var(--ink-3);
+    margin-bottom: 14px;
+    letter-spacing: -0.005em;
+  }
+  .role .body .desc {
+    font-size: 14.5px;
+    color: var(--ink-2);
+    line-height: 1.6;
+    letter-spacing: -0.005em;
+  }
+  .role .body .desc strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .role .body .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 14px;
+  }
+  .role .body .tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-3);
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    padding: 3px 10px;
+    border-radius: 4px;
+    letter-spacing: 0.02em;
+  }
+
+  /* CREATRA — featured */
+  .role.featured {
+    border: 1.5px solid var(--ink);
+    background: var(--bg-soft);
+    padding: 32px;
+  }
+  .role.featured .body h3 {
+    font-size: 26px;
+    letter-spacing: -0.025em;
+  }
+  .role.featured .body .org {
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
+  .role.featured .featured-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--red);
+    background: var(--red-bg);
+    padding: 4px 10px;
+    border-radius: 100px;
+    margin-bottom: 14px;
+  }
+  .role.featured .featured-badge::before {
+    content: "★";
+    font-size: 9px;
+  }
+  .role.featured .lead {
+    font-size: 15px;
+    color: var(--ink-2);
+    line-height: 1.6;
+    margin-bottom: 24px;
+    max-width: 680px;
+    letter-spacing: -0.005em;
+  }
+  .role.featured .lead strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  /* Metric pods — Wolfram-style result blocks */
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 28px;
+  }
+  .metric-pod {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 18px;
+    text-align: left;
+  }
+  .metric-pod .m-num {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--red);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-bottom: 8px;
+  }
+  .metric-pod .m-num .small {
+    font-size: 18px;
+    color: var(--ink-3);
+    font-weight: 500;
+  }
+  .metric-pod .m-lbl {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10.5px;
+    color: var(--ink-3);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    line-height: 1.4;
+  }
+
+  /* Sub-roles */
+  .sub-roles {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+  .sub-role {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 24px;
+    padding: 16px 18px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    align-items: baseline;
+  }
+  .sub-role .sub-when {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-3);
+    letter-spacing: 0.02em;
+  }
+  .sub-role .sub-body h4 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 6px;
+    letter-spacing: -0.012em;
+  }
+  .sub-role .sub-body p {
+    font-size: 13.5px;
+    color: var(--ink-2);
+    line-height: 1.55;
+    letter-spacing: -0.003em;
+  }
+
+  /* ───────────────────────── Cards grid (education, courses) ───────────────────────── */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .info-card {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 22px;
+    transition: border-color 200ms ease;
+  }
+  .info-card:hover { border-color: var(--ink-4); }
+
+  .info-card .ic-meta {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-3);
+    letter-spacing: 0.04em;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .info-card .ic-meta .ic-pill {
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    padding: 2px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    font-size: 10px;
+    color: var(--ink-3);
+  }
+  .info-card h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.018em;
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+  .info-card .ic-sub {
+    font-size: 13px;
+    color: var(--ink-3);
+    line-height: 1.5;
+  }
+
+  /* ───────────────────────── List card (courses, skills) ───────────────────────── */
+  .list-card {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 24px;
+  }
+  .list-card h4 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--red);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  .list-card ul { list-style: none; }
+  .list-card li {
+    font-size: 14px;
+    color: var(--ink-2);
+    line-height: 1.7;
+    padding: 4px 0;
+    letter-spacing: -0.003em;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .list-card li::before {
+    content: "→";
+    color: var(--red);
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  /* ───────────────────────── Interests ───────────────────────── */
+  .interests-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .interest-card {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 24px;
+    display: flex;
+    gap: 16px;
+    transition: border-color 200ms ease;
+  }
+  .interest-card:hover { border-color: var(--ink-4); }
+  .interest-card .num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--red);
+    flex-shrink: 0;
+    background: var(--red-bg);
+    height: 32px; width: 32px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .interest-card h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 6px;
+    letter-spacing: -0.015em;
+  }
+  .interest-card p {
+    font-size: 13.5px;
+    color: var(--ink-2);
+    line-height: 1.55;
+    letter-spacing: -0.003em;
+  }
+
+  /* ───────────────────────── Contact ───────────────────────── */
+  .contact-pods {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  .contact-pod {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 22px;
+    transition: border-color 200ms ease;
+  }
+  .contact-pod:hover { border-color: var(--red); }
+  .contact-pod .cp-lbl {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-3);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .contact-pod .cp-val {
+    font-size: 16px;
+    color: var(--ink);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1.3;
+    word-break: break-word;
+  }
+  .contact-pod .cp-val a {
+    transition: color 180ms ease;
+  }
+  .contact-pod .cp-val a:hover { color: var(--red); }
+  .contact-pod .cp-sub {
+    font-size: 12px;
+    color: var(--ink-3);
+    margin-top: 4px;
+    font-weight: 400;
+  }
+
+  /* ───────────────────────── Footer ───────────────────────── */
+  footer.site-footer {
+    padding: 48px 0 32px;
+    margin-top: 64px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-4);
+    letter-spacing: 0.04em;
+  }
+  footer.site-footer .phi {
+    color: var(--red);
+    font-weight: 500;
+    font-style: italic;
+  }
+
+  /* ───────────────────────── Responsive ───────────────────────── */
+  @media (max-width: 880px) {
+    .container { padding: 0 20px; }
+
+    .topbar { flex-direction: column; gap: 14px; align-items: flex-start; }
+    .topbar nav { width: 100%; justify-content: space-between; gap: 12px; font-size: 13px; }
+
+    header.hero { padding: 48px 0 40px; }
+    section { padding: 48px 0; }
+
+    .hero-stats { grid-template-columns: 1fr 1fr; }
+    .about-grid { grid-template-columns: 1fr; gap: 24px; }
+    .role, .sub-role { grid-template-columns: 1fr; gap: 14px; padding: 20px; }
+    .role.featured { padding: 24px; }
+    .metric-grid { grid-template-columns: 1fr 1fr; }
+    .grid-2, .grid-3, .interests-grid, .contact-pods {
+      grid-template-columns: 1fr;
+    }
+
+    .section-head { flex-direction: column; align-items: flex-start; gap: 10px; }
+    footer.site-footer { flex-direction: column; gap: 10px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Topbar with personal mark -->
+  <header class="topbar">
+    <div class="brand">
+      <!-- Personal mark: Dürer's polyhedron (Melencolia I, 1514) -->
+      <svg class="brand-mark" viewBox="0 0 64 72" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#DC0000" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round">
+        <!-- Outer silhouette: the tilted polyhedron -->
+        <path d="M 22,16 L 32,6 L 46,12 L 56,32 L 50,56 L 34,66 L 16,60 L 8,38 Z" />
+        <!-- Top triangular face (the truncation) -->
+        <line x1="22" y1="16" x2="46" y2="12" />
+        <line x1="22" y1="16" x2="38" y2="22" />
+        <line x1="46" y1="12" x2="38" y2="22" />
+        <!-- Internal edges between pentagonal faces -->
+        <line x1="38" y1="22" x2="34" y2="66" />
+        <line x1="38" y1="22" x2="56" y2="32" />
+        <line x1="38" y1="22" x2="8" y2="38" />
+      </svg>
+      <div class="brand-text">
+        <span class="name">Genaro Rodríguez Hoyos</span>
+        <span class="role">Ingeniero Industrial</span>
+      </div>
+    </div>
+
+    <nav>
+      <a href="#sobre">Sobre</a>
+      <a href="#trayectoria">Trayectoria</a>
+      <a href="#formacion">Formación</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
+  </header>
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="hero-kicker">Disponible · Trujillo, Perú</div>
+
+    <h1 class="hero-name">Genaro Yoel<br/>Rodríguez Hoyos.</h1>
+
+    <p class="hero-tagline">
+      Jefe de Planeamiento y Control de la Producción en JOLI JOLI. Diez años en gestión de producción, cinco en innovación y desarrollo, cuatro en planificación de proyectos bajo PMBOK.
+    </p>
+
+    <div class="hero-stats">
+      <div class="stat-pod">
+        <div class="stat-num">15<span class="unit">años</span></div>
+        <div class="stat-lbl">Experiencia<br/>profesional</div>
+      </div>
+      <div class="stat-pod">
+        <div class="stat-num">5</div>
+        <div class="stat-lbl">Organizaciones<br/>productivas</div>
+      </div>
+      <div class="stat-pod">
+        <div class="stat-num">7<span class="unit">años</span></div>
+        <div class="stat-lbl">Capítulo central<br/>CREATRA S.A.C.</div>
+      </div>
+      <div class="stat-pod">
+        <div class="stat-num">3<span class="unit">sectores</span></div>
+        <div class="stat-lbl">Cuero · Calzado<br/>Construcción naval</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Sobre -->
+  <section id="sobre">
+    <div class="section-head">
+      <h2><span class="section-num">01</span>Sobre</h2>
+      <div class="section-aside">Resumen del perfil</div>
+    </div>
+
+    <div class="about-grid">
+      <div class="prose">
+        <p>
+          Mi trabajo se mueve entre la disciplina del taller y el rigor del documento institucional. Planifiqué proyectos de construcción naval en <strong>SIMA‑PERÚ</strong>, dirigí planta en <strong>SEGUSA</strong>, y durante siete años en <strong>CREATRA S.A.C.</strong> lideré la producción y el desarrollo de calzado y accesorios de cuero para marcas estadounidenses — Nisolo, Sseko, Raisemewild.
+        </p>
+        <p>
+          En CREATRA acompañé un crecimiento de <span class="red">6× en cantidad producida</span> con apenas 2× la mano de obra, logrando un 35 % de mejora en eficiencia y un 20 % de ahorro en consumo de material.
+        </p>
+        <p>
+          Más recientemente supervisé proveedores MYPE desde el Núcleo Ejecutor de Compras del <strong>Ministerio de la Producción</strong>, gestionando bienes especializados por más de <span class="red">S/ 50 millones</span> para MINSA y MINEDU.
+        </p>
+        <p>
+          Hoy llevo esa experiencia al sector privado como Jefe de Planeamiento y Control de la Producción en JOLI JOLI. En paralelo me formo en analítica, machine learning y dirección de operaciones.
+        </p>
+      </div>
+
+      <aside class="quick-facts">
+        <div class="qf-title">Datos clave</div>
+        <div class="qf-row"><span class="qf-k">Profesión</span><span class="qf-v">Ing. Industrial</span></div>
+        <div class="qf-row"><span class="qf-k">Universidad</span><span class="qf-v">UNT — Trujillo</span></div>
+        <div class="qf-row"><span class="qf-k">Mérito</span><span class="qf-v">Décimo Superior</span></div>
+        <div class="qf-row"><span class="qf-k">Certificación</span><span class="qf-v">PMBOK · PUCP</span></div>
+        <div class="qf-row"><span class="qf-k">PDU's</span><span class="qf-v">180</span></div>
+        <div class="qf-row"><span class="qf-k">Base</span><span class="qf-v">Trujillo · Perú</span></div>
+        <div class="qf-row"><span class="qf-k">Viaje</span><span class="qf-v">Disponible</span></div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- Trayectoria -->
+  <section id="trayectoria">
+    <div class="section-head">
+      <h2><span class="section-num">02</span>Trayectoria</h2>
+      <div class="section-aside">6 cargos · 5 organizaciones</div>
+    </div>
+
+    <div class="roles">
+
+      <article class="role">
+        <div class="when">
+          Abr 2026 →<br/>
+          <span class="now">Actual</span>
+        </div>
+        <div class="body">
+          <h3>Jefe de Planeamiento y Control de la Producción</h3>
+          <div class="org">JOLI JOLI · Calzado de dama · Trujillo</div>
+          <p class="desc">
+            Responsable del planeamiento, programación y control de la producción en una fábrica de calzado femenino en expansión. Diseño e implementación del sistema de gestión operativa: organigrama, mapa de procesos, MOF, RIT y formatos de seguimiento de KPI. Modernización del sistema de gestión de almacén y control de inventarios.
+          </p>
+          <div class="tags">
+            <span class="tag">PCP</span>
+            <span class="tag">Sistemas de gestión</span>
+            <span class="tag">REMYPE</span>
+            <span class="tag">KPI</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="role">
+        <div class="when">
+          Dic 2024 →<br/>Mar 2026
+        </div>
+        <div class="body">
+          <h3>Gestor de Inspección de la Producción</h3>
+          <div class="org">NEC Cuero y Calzado · Ministerio de la Producción</div>
+          <p class="desc">
+            Responsable del cumplimiento de producción y entrega de bienes especializados al Estado: <strong>S/ 996,623</strong> en calzado para MINSA, <strong>S/ 37.5 M</strong> en mochilas escolares para MINEDU, y <strong>S/ 12.9 M</strong> en correas de nylon, zapatillas, portadocumentos y guantes de cuero. Supervisión técnica de proveedores MYPE, informes situacionales y gestión de conflictos contractuales. Iniciado como Supervisor de Campo (Oct – Dic 2024).
+          </p>
+          <div class="tags">
+            <span class="tag">Compras públicas</span>
+            <span class="tag">MYPE</span>
+            <span class="tag">MINSA</span>
+            <span class="tag">MINEDU</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- CREATRA — featured -->
+      <article class="role featured">
+        <div class="when">
+          Jun 2017 →<br/>Jul 2024<br/>
+          <strong style="color: var(--ink); display: inline-block; margin-top: 6px;">7 años</strong>
+        </div>
+        <div class="body">
+          <div class="featured-badge">Capítulo central</div>
+          <h3>CREATRA S.A.C.</h3>
+          <div class="org">Manufactura de calzado y accesorios de cuero · Exportación a EE. UU.</div>
+          <p class="lead">
+            Siete años de progresión interna en una empresa exportadora de calzado y accesorios para <strong>Nisolo, Sseko y Raisemewild</strong>. Acompañé un proceso de crecimiento sostenido como Coordinador, Jefe de Producción y, en paralelo, Jefe de Desarrollo de Productos.
+          </p>
+
+          <div class="metric-grid">
+            <div class="metric-pod">
+              <div class="m-num">6<span class="small">×</span></div>
+              <div class="m-lbl">Crecimiento en<br/>producción</div>
+            </div>
+            <div class="metric-pod">
+              <div class="m-num">2<span class="small">×</span></div>
+              <div class="m-lbl">Mano de obra<br/>directa</div>
+            </div>
+            <div class="metric-pod">
+              <div class="m-num">35<span class="small">%</span></div>
+              <div class="m-lbl">Eficiencia en<br/>mano de obra</div>
+            </div>
+            <div class="metric-pod">
+              <div class="m-num">20<span class="small">%</span></div>
+              <div class="m-lbl">Ahorro de<br/>material</div>
+            </div>
+          </div>
+
+          <div class="sub-roles">
+            <div class="sub-role">
+              <div class="sub-when">Jun 2017 — Abr 2018</div>
+              <div class="sub-body">
+                <h4>Coordinador de Operaciones</h4>
+                <p>Planificación y control a corto, mediano y largo plazo. Implementación de indicadores de gestión, análisis de costos y coordinación directa con el cliente en EE. UU. Participación en la implementación de SAP.</p>
+              </div>
+            </div>
+
+            <div class="sub-role">
+              <div class="sub-when">Ago 2017 — Jul 2024</div>
+              <div class="sub-body">
+                <h4>Jefe de Producción</h4>
+                <p>Cumplimiento de los compromisos de exportación en tiempo, costo y calidad. Diseño de estrategias tácticas y operativas, mejora del proceso productivo y optimización de material durante el periodo de mayor expansión. Récords mensuales y diarios de producción.</p>
+              </div>
+            </div>
+
+            <div class="sub-role">
+              <div class="sub-when">May 2018 — Jun 2020</div>
+              <div class="sub-body">
+                <h4>Jefe de Desarrollo de Productos</h4>
+                <p>Gestión del desarrollo de nuevos productos bajo estrictos estándares técnicos y análisis de costos. Innovación orientada a reducir tiempos de producción. Responsable del control de calidad.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="tags">
+            <span class="tag">Nisolo</span>
+            <span class="tag">Sseko</span>
+            <span class="tag">Raisemewild</span>
+            <span class="tag">Exportación EE. UU.</span>
+            <span class="tag">SAP</span>
+            <span class="tag">Desarrollo de producto</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="role">
+        <div class="when">
+          Jun 2015 →<br/>Dic 2016
+        </div>
+        <div class="body">
+          <h3>Supervisor de Planta</h3>
+          <div class="org">SEGUSA S.A. · Calzado de seguridad, carpas, ropa militar</div>
+          <p class="desc">
+            Líder de planta con un equipo de <strong>100 personas</strong> en una operación de manufactura para el sector industrial y militar. Planificación y programación de la producción y del requerimiento de materiales. Previamente, como Coordinador de Producción (jun – dic 2015): implementación de indicadores con reporte diario a Gerencia, control de prioridades en cuatro plantas y análisis de costos.
+          </p>
+          <div class="tags">
+            <span class="tag">Liderazgo de planta</span>
+            <span class="tag">Costos</span>
+            <span class="tag">100 personas</span>
+            <span class="tag">Multi‑planta</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="role">
+        <div class="when">
+          Dic 2011 →<br/>May 2015
+        </div>
+        <div class="body">
+          <h3>Intendente de Planeamiento y Control de Producción</h3>
+          <div class="org">Servicios Industriales de la Marina · SIMA‑PERÚ</div>
+          <p class="desc">
+            Planificación y control de la totalidad de los proyectos de construcción naval ejecutados en el astillero durante el periodo 2011–2015. Mejoras del sistema de gestión integrado, control de pagos a terceros según avance, seguimiento de compras y cálculo de ratios de producción.
+          </p>
+          <div class="tags">
+            <span class="tag">Construcción naval</span>
+            <span class="tag">PMBOK</span>
+            <span class="tag">SGI</span>
+            <span class="tag">Sector público</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="role">
+        <div class="when">
+          Feb 2013 →<br/>Jun 2013
+        </div>
+        <div class="body">
+          <h3>Docente de Pregrado</h3>
+          <div class="org">Universidad Privada San Pedro</div>
+          <p class="desc">
+            Docencia en pregrado de Ingeniería Industrial. Cursos: Planeamiento y Control de la Producción, Logística Integral, Gestión de la Cadena de Suministros.
+          </p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- Formación -->
+  <section id="formacion">
+    <div class="section-head">
+      <h2><span class="section-num">03</span>Formación</h2>
+      <div class="section-aside">6 programas académicos</div>
+    </div>
+
+    <div class="grid-2">
+      <article class="info-card">
+        <div class="ic-meta"><span>2023</span><span class="ic-pill">Diplomatura</span></div>
+        <h3>Gestión de Tecnología e Innovación</h3>
+        <div class="ic-sub">CIATEC — Centro de Innovación Aplicada en Tecnologías Competitivas, México</div>
+      </article>
+
+      <article class="info-card">
+        <div class="ic-meta"><span>2020 — 2021</span><span class="ic-pill">No concluida</span></div>
+        <h3>Maestría en Ingeniería · Gerencia de Operaciones</h3>
+        <div class="ic-sub">Facultad de Postgrado · Universidad Nacional de Trujillo</div>
+      </article>
+
+      <article class="info-card">
+        <div class="ic-meta"><span>2012 — 2013</span><span class="ic-pill">180 PDU's</span></div>
+        <h3>Dirección de Proyectos · PMBOK</h3>
+        <div class="ic-sub">Instituto para la Calidad · Pontificia Universidad Católica del Perú</div>
+      </article>
+
+      <article class="info-card">
+        <div class="ic-meta"><span>2006 — 2010</span><span class="ic-pill">Décimo Superior</span></div>
+        <h3>Ingeniería Industrial</h3>
+        <div class="ic-sub">Facultad de Ingeniería · Universidad Nacional de Trujillo</div>
+      </article>
+
+      <article class="info-card">
+        <div class="ic-meta"><span>2011</span><span class="ic-pill">Tercio Superior</span></div>
+        <h3>Iniciación a la Vida Empresarial</h3>
+        <div class="ic-sub">Facultad de Ciencias Económicas · Universidad de Piura</div>
+      </article>
+
+      <article class="info-card">
+        <div class="ic-meta"><span>Continua</span><span class="ic-pill">MOOC</span></div>
+        <h3>Machine Learning & Data Science</h3>
+        <div class="ic-sub">Coursera · edX · HarvardX</div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Cursos -->
+  <section id="cursos">
+    <div class="section-head">
+      <h2><span class="section-num">04</span>Cursos de especialización</h2>
+      <div class="section-aside">8 cursos · 3 áreas</div>
+    </div>
+
+    <div class="grid-3">
+      <div class="list-card">
+        <h4>Gestión & Operaciones</h4>
+        <ul>
+          <li>Planeamiento y Control de la Producción · CENFOLOG</li>
+          <li>Optimización de Procesos · TECSUP</li>
+          <li>MS Project · PUCP</li>
+          <li>Gestor de Innovación · CITECCAL</li>
+        </ul>
+      </div>
+      <div class="list-card">
+        <h4>Costos & Diseño</h4>
+        <ul>
+          <li>Administración de Costos Industriales · TECSUP</li>
+          <li>Costos y Presupuestos · SENATI</li>
+          <li>Diseño CAD Avanzado · SENATI</li>
+        </ul>
+      </div>
+      <div class="list-card">
+        <h4>Construcción naval</h4>
+        <ul>
+          <li>Newbuilding Surveys · Germanischer Lloyd</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Competencias -->
+  <section id="competencias">
+    <div class="section-head">
+      <h2><span class="section-num">05</span>Competencias</h2>
+      <div class="section-aside">Operaciones · Sector público · Herramientas</div>
+    </div>
+
+    <div class="grid-3">
+      <div class="list-card">
+        <h4>Operaciones</h4>
+        <ul>
+          <li>Gestión de planta</li>
+          <li>Planeamiento y control de producción</li>
+          <li>Control de calidad e inspectoría</li>
+          <li>Estudios de tiempos y métodos</li>
+          <li>Mapa de procesos & MOF</li>
+          <li>Gestión de almacén</li>
+          <li>KPI y mejora continua</li>
+        </ul>
+      </div>
+      <div class="list-card">
+        <h4>Sector público & MYPE</h4>
+        <ul>
+          <li>Supervisión de proveedores MYPE</li>
+          <li>Compras públicas (SEACE / OSCE)</li>
+          <li>Inspección técnica de campo</li>
+          <li>Redacción institucional formal</li>
+          <li>Descargos y respuestas técnicas</li>
+          <li>Régimen REMYPE</li>
+        </ul>
+      </div>
+      <div class="list-card">
+        <h4>Herramientas</h4>
+        <ul>
+          <li>Excel avanzado · Power Query</li>
+          <li>Word — MOF, RIT, informes</li>
+          <li>Python · pandas · openpyxl</li>
+          <li>R · LaTeX · Matlab · Julia</li>
+          <li>SAP</li>
+          <li>Git & GitHub</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Intereses -->
+  <section id="intereses">
+    <div class="section-head">
+      <h2><span class="section-num">06</span>Intereses</h2>
+      <div class="section-aside">Lo que construyo en paralelo</div>
+    </div>
+
+    <div class="interests-grid">
+      <article class="interest-card">
+        <div class="num">01</div>
+        <div>
+          <h4>Análisis de datos públicos</h4>
+          <p>Exploración del ecosistema de contratación pública peruana (SEACE/OSCE) para detectar patrones e irregularidades.</p>
+        </div>
+      </article>
+
+      <article class="interest-card">
+        <div class="num">02</div>
+        <div>
+          <h4>Diseño de producto en cuero</h4>
+          <p>Conceptualización de una propuesta de calzado femenino con estética sobria — proporción áurea y venta online como canal.</p>
+        </div>
+      </article>
+
+      <article class="interest-card">
+        <div class="num">03</div>
+        <div>
+          <h4>Matemáticas & machine learning</h4>
+          <p>Estudio sostenido de fundamentos matemáticos, estadística y machine learning. La siguiente puerta profesional.</p>
+        </div>
+      </article>
+
+      <article class="interest-card">
+        <div class="num">04</div>
+        <div>
+          <h4>Estudios de posgrado</h4>
+          <p>Interés activo en cursar una maestría que articule la experiencia operativa con herramientas analíticas avanzadas.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Contacto -->
+  <section id="contacto">
+    <div class="section-head">
+      <h2><span class="section-num">07</span>Contacto</h2>
+      <div class="section-aside">Conversemos sobre un proyecto</div>
+    </div>
+
+    <div class="contact-pods">
+      <a class="contact-pod" href="mailto:rgenaro1@gmail.com">
+        <div class="cp-lbl">Email</div>
+        <div class="cp-val">rgenaro1@gmail.com</div>
+      </a>
+
+      <a class="contact-pod" href="tel:+51955910443">
+        <div class="cp-lbl">Celular</div>
+        <div class="cp-val">+51 955 910 443</div>
+      </a>
+
+      <a class="contact-pod" href="https://pe.linkedin.com/in/genaro-yoel-rodr%C3%ADguez-hoyos-56018285" target="_blank" rel="noopener">
+        <div class="cp-lbl">LinkedIn</div>
+        <div class="cp-val">Perfil profesional →</div>
+      </a>
+
+      <a class="contact-pod" href="https://github.com/rgenaro1" target="_blank" rel="noopener">
+        <div class="cp-lbl">GitHub</div>
+        <div class="cp-val">github.com/rgenaro1</div>
+      </a>
+
+      <a class="contact-pod" href="data/cv.pdf" target="_blank">
+        <div class="cp-lbl">CV en PDF</div>
+        <div class="cp-val">Descargar documento →</div>
+      </a>
+
+      <div class="contact-pod">
+        <div class="cp-lbl">Ubicación</div>
+        <div class="cp-val">Trujillo, Perú</div>
+        <div class="cp-sub">Disponibilidad para viajar</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <span>© 2026 Genaro Rodríguez Hoyos · Composed with <span class="phi">φ</span></span>
+    <span>Última actualización · Mayo 2026</span>
+  </footer>
+
+</div>
+
+</body>
+</html>
