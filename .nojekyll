@@ -1,0 +1,5 @@
+cd rgenaro1.github.io
+touch .nojekyll
+git add .nojekyll
+git commit -m "Desactivar Jekyll para servir archivos estáticos directamente"
+git push
