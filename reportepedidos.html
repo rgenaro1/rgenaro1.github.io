@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reporte árbol · Control de recepción · JOLI JOLI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0E1315;
+    --ink-soft:#4B5559;
+    --line:#E3E7E8;
+    --line-soft:#EEF1F1;
+    --paper:#FFFFFF;
+    --canvas:#F6F8F8;
+    --teal:#0FB6AA;
+    --teal-dark:#0A8F86;
+    --teal-wash:#E4F8F6;
+    --ok:#1E8E5A;
+    --ok-wash:#E7F5EC;
+    --pend:#C97A17;
+    --pend-wash:#FCF1E1;
+    --warn:#B33A2E;
+    --warn-wash:#FBEAE7;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--canvas);
+    color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .mono{font-family:'IBM Plex Mono',monospace;}
+
+  header{
+    background:var(--paper);
+    border-bottom:1px solid var(--line);
+    padding:22px 28px 18px;
+    position:sticky; top:0; z-index:20;
+  }
+  .brandline{display:flex; align-items:baseline; gap:10px; margin-bottom:2px;}
+  .brandline .tag{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.08em;
+    color:var(--teal-dark); background:var(--teal-wash); border:1px solid #BFEAE6;
+    padding:2px 8px; border-radius:100px; font-weight:600;
+  }
+  h1{font-size:20px; font-weight:800; margin:4px 0 2px; letter-spacing:-0.01em;}
+  .sub{color:var(--ink-soft); font-size:13px; margin:0;}
+
+  .toolbar{display:flex; gap:10px; margin-top:16px; flex-wrap:wrap; align-items:center;}
+  .search{flex:1 1 240px; position:relative;}
+  .search input{
+    width:100%; padding:9px 12px 9px 32px; border-radius:8px; border:1px solid var(--line);
+    font-size:13.5px; font-family:inherit; background:var(--canvas); color:var(--ink);
+  }
+  .search input:focus{outline:2px solid var(--teal); outline-offset:-1px; background:var(--paper);}
+  .search svg{position:absolute; left:10px; top:50%; transform:translateY(-50%); opacity:.45;}
+  .chip-row{display:flex; gap:6px;}
+  .chip{
+    border:1px solid var(--line); background:var(--paper); color:var(--ink-soft);
+    font-size:12.5px; font-weight:600; padding:7px 12px; border-radius:100px; cursor:pointer;
+    transition:.15s;
+  }
+  .chip[aria-pressed="true"]{background:var(--ink); color:#fff; border-color:var(--ink);}
+  .chip:focus-visible{outline:2px solid var(--teal); outline-offset:2px;}
+
+  .stats{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:16px;}
+  .stat{background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); padding:12px 14px;}
+  .stat .n{font-family:'IBM Plex Mono',monospace; font-size:21px; font-weight:600; line-height:1;}
+  .stat .l{font-size:11.5px; color:var(--ink-soft); margin-top:5px; letter-spacing:.02em;}
+  .stat.ok .n{color:var(--ok);}
+  .stat.pend .n{color:var(--pend);}
+  .stat.teal .n{color:var(--teal-dark);}
+  .stat.warn .n{color:var(--warn);}
+
+  .section-label{
+    font-size:11px; font-weight:700; letter-spacing:.06em; color:var(--ink-soft);
+    text-transform:uppercase; margin:20px 0 8px;
+  }
+
+  .kpi-panel{
+    background:var(--paper); border:1px solid var(--line); border-radius:var(--radius);
+    padding:14px 16px; margin-top:6px;
+  }
+  .range-row{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:12px;}
+  .range-row label{font-size:12px; color:var(--ink-soft); font-weight:600;}
+  .range-row input[type=date]{
+    border:1px solid var(--line); border-radius:7px; padding:6px 8px; font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px; color:var(--ink); background:var(--canvas);
+  }
+  .range-sep{color:var(--ink-soft); font-size:12px;}
+  .btn-reset{
+    border:1px solid var(--line); background:var(--canvas); color:var(--ink-soft); font-size:12px; font-weight:600;
+    padding:6px 11px; border-radius:100px; cursor:pointer;
+  }
+  .btn-reset:hover{color:var(--teal-dark); border-color:var(--teal);}
+  .range-days{margin-left:auto; font-size:11.5px; color:var(--ink-soft); font-family:'IBM Plex Mono',monospace;}
+
+  main{padding:20px 28px 60px; max-width:980px; margin:0 auto;}
+
+  .node{border:1px solid var(--line); border-radius:var(--radius); background:var(--paper); margin-bottom:8px; overflow:hidden;}
+  .node-row{
+    display:flex; align-items:center; gap:12px; padding:12px 14px; cursor:pointer; user-select:none;
+    border-bottom:1px solid transparent;
+  }
+  .node-row:hover{background:var(--canvas);}
+  .node.open > .node-row{border-bottom-color:var(--line-soft);}
+  .twist{
+    width:18px; height:18px; flex:none; display:flex; align-items:center; justify-content:center;
+    transition:transform .18s ease; color:var(--ink-soft);
+  }
+  .node.open > .node-row .twist{transform:rotate(90deg); color:var(--teal-dark);}
+  .node-label{flex:1; min-width:0; display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;}
+  .node-title{font-weight:700; font-size:14.5px;}
+  .node-count{font-size:12px; color:var(--ink-soft); font-family:'IBM Plex Mono',monospace;}
+  .node-bar-wrap{width:130px; flex:none; display:flex; align-items:center; gap:8px;}
+  .node-body{display:none;}
+  .node.open > .node-body{display:block; padding:6px 10px 10px 30px;}
+
+  .bar{height:6px; flex:1; background:var(--line-soft); border-radius:100px; overflow:hidden; position:relative;}
+  .bar > i{display:block; height:100%; background:var(--teal); border-radius:100px;}
+  .bar.done > i{background:var(--ok);}
+  .bar-pct{font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--ink-soft); width:32px; text-align:right; flex:none;}
+
+  .lvl-color > .node-row{padding-left:10px;}
+  .lvl-color > .node-row .node-title{font-weight:600; font-size:13.5px; color:var(--ink);}
+
+  .op{border:1px solid var(--line-soft); border-radius:8px; margin:6px 0; background:var(--canvas); overflow:hidden;}
+  .op-row{display:flex; align-items:center; gap:12px; padding:10px 12px; cursor:pointer;}
+  .op-row:hover{background:var(--line-soft);}
+  .op.open .op-row{border-bottom:1px solid var(--line);}
+  .op .twist{width:14px; height:14px;}
+  .op.open .op-row .twist{transform:rotate(90deg); color:var(--teal-dark);}
+  .op-tag{
+    font-family:'IBM Plex Mono',monospace; font-size:11.5px; font-weight:600; color:var(--ink);
+    background:var(--paper); border:1px solid var(--line); padding:3px 7px; border-radius:6px; flex:none;
+  }
+  .op-meta{flex:1; min-width:0; font-size:12.5px; color:var(--ink-soft); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .badge{font-size:10.5px; font-weight:700; letter-spacing:.03em; padding:3px 8px; border-radius:100px; flex:none;}
+  .badge.ok{background:var(--ok-wash); color:var(--ok);}
+  .badge.pend{background:var(--pend-wash); color:var(--pend);}
+
+  .op-detail{display:none; padding:8px 14px 10px 40px; background:var(--paper);}
+  .op.open .op-detail{display:block;}
+  .talla-row{display:flex; align-items:center; gap:10px; padding:5px 4px; font-size:12.5px;}
+  .talla-num{
+    width:26px; height:26px; border-radius:6px; background:var(--canvas); border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace;
+    font-size:11px; font-weight:600; flex:none;
+  }
+  .talla-qty{width:92px; flex:none; color:var(--ink-soft); font-family:'IBM Plex Mono',monospace; font-size:11.5px;}
+  .talla-estado{width:76px; flex:none; text-align:right; font-size:11px; font-weight:600;}
+  .talla-estado.ok{color:var(--ok);}
+  .talla-estado.pend{color:var(--pend);}
+
+  .example-flag{
+    display:inline-flex; align-items:center; gap:4px; font-size:10px; font-weight:700; letter-spacing:.04em;
+    color:var(--teal-dark); background:var(--teal-wash); border:1px solid #BFEAE6; padding:2px 7px;
+    border-radius:100px; margin-left:6px;
+  }
+
+  .note{
+    background:var(--paper); border:1px dashed var(--line); border-radius:var(--radius);
+    padding:14px 16px; font-size:12.5px; color:var(--ink-soft); line-height:1.55; margin-top:18px;
+  }
+  .note b{color:var(--ink);}
+  .empty{padding:40px 0; text-align:center; color:var(--ink-soft); font-size:13px; display:none;}
+
+  @media (max-width:640px){
+    .stats{grid-template-columns:repeat(2,1fr);}
+    .node-bar-wrap{width:90px;}
+    header{padding:16px 16px 14px;} main{padding:16px 16px 50px;}
+    .range-days{margin-left:0; width:100%;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brandline"><span class="tag">DANTIX · PLANNING</span></div>
+  <h1>Control de recepción — árbol de pedidos</h1>
+  <p class="sub">Pedido → Modelo → Color → OP → estado por talla, con avance en vivo desde <span class="mono">01_Pedido_Maestro</span> / <span class="mono">04_Resumen_Cruce</span></p>
+
+  <div class="toolbar">
+    <div class="search">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input id="q" type="text" placeholder="Buscar por modelo, color o N° OP…">
+    </div>
+    <div class="chip-row" id="filters">
+      <button class="chip" data-f="all" aria-pressed="true">Todos</button>
+      <button class="chip" data-f="Pendiente" aria-pressed="false">Pendientes</button>
+      <button class="chip" data-f="Completo" aria-pressed="false">Completos</button>
+    </div>
+    <div class="chip-row">
+      <button class="chip" id="btnExpand">Expandir todo</button>
+      <button class="chip" id="btnCollapse">Colapsar todo</button>
+    </div>
+  </div>
+
+  <div class="section-label">Resumen de pedidos (según filtro de arriba)</div>
+  <div class="stats">
+    <div class="stat teal"><div class="n" id="stOps">–</div><div class="l">OP EN VISTA</div></div>
+    <div class="stat pend"><div class="n" id="stPend">–</div><div class="l">PENDIENTES</div></div>
+    <div class="stat ok"><div class="n" id="stOk">–</div><div class="l">COMPLETOS</div></div>
+    <div class="stat"><div class="n" id="stPct">–</div><div class="l">AVANCE GLOBAL</div></div>
+  </div>
+
+  <div class="section-label">Indicadores de recepción (rango de fechas)</div>
+  <div class="kpi-panel">
+    <div class="range-row">
+      <label for="dFrom">Desde</label>
+      <input type="date" id="dFrom">
+      <span class="range-sep">→</span>
+      <label for="dTo">Hasta</label>
+      <input type="date" id="dTo">
+      <button class="btn-reset" id="btnLast7">Últimos 7 días</button>
+      <span class="range-days" id="rangeDaysLbl"></span>
+    </div>
+    <div class="stats">
+      <div class="stat teal"><div class="n" id="kpiEntregado">–</div><div class="l">ENTREGADO (A+B+C) / PEDIDO</div></div>
+      <div class="stat pend"><div class="n" id="kpiB">–</div><div class="l">LIQUIDACIÓN B / TOTAL RECIBIDO</div></div>
+      <div class="stat warn"><div class="n" id="kpiC">–</div><div class="l">DESCARTE C / TOTAL RECIBIDO</div></div>
+      <div class="stat"><div class="n" id="kpiDia">–</div><div class="l">PARES / DÍA</div></div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div id="tree"></div>
+  <div class="empty" id="emptyMsg">Sin resultados para ese filtro.</div>
+
+  <div class="note">
+    <b>Sobre estos datos —</b> Los OP del árbol (salvo los dos marcados "ejemplo") son un recorte real de tu hoja
+    <span class="mono">04_Resumen_Cruce</span>, todos en talla 35. Los movimientos usados para los 4 KPI de arriba
+    (entregado/pedido, % B, % C y pares/día) son <b>eventos de ejemplo</b> repartidos en los últimos días, porque
+    <span class="mono">02_Recepción_Ubaldo</span> y <span class="mono">03_Registro_Mercedes_C</span> hoy solo tienen
+    1-2 filas cargadas — no alcanza para mostrar una curva. En cuanto tengas más recepciones diarias cargadas ahí,
+    este mismo panel (conectado como Web App de Apps Script, igual que Dantix Planning) calcularía los KPI reales
+    para cualquier rango que elijas.
+  </div>
+</main>
+
+<script>
+const REAL_OPS = [
+  ["MILEY","NEGRO",38,0,0,"Completo"],
+  ["KAROL","MORADO",40,2,0,"Pendiente"],
+  ["SELENA","NEGRO",47,2,0,"Pendiente"],
+  ["VICTORIA","MARRON",49,2,0,"Pendiente"],
+  ["MILEY","NEGRO",51,2,0,"Pendiente"],
+  ["SELENA","AZUL",54,0,0,"Completo"],
+  ["SELENA","NEGRO",55,2,0,"Pendiente"],
+  ["VICTORIA","MARRON",56,2,0,"Pendiente"],
+  ["VALERIA","CAMEL",68,2,0,"Pendiente"],
+  ["MILEY","VERDE",84,2,0,"Pendiente"],
+  ["SASHA","NEGRO",111,2,0,"Pendiente"],
+  ["SASHA","CAMEL",114,2,0,"Pendiente"],
+  ["SASHA","CAMEL",115,2,0,"Pendiente"],
+  ["SASHA","CAMEL",116,2,0,"Pendiente"],
+  ["SASHA","CAMEL",119,0,0,"Completo"],
+  ["SASHA","NEGRO",129,1,0,"Pendiente"],
+  ["SASHA","NEGRO",130,1,0,"Pendiente"],
+  ["SASHA","BEIGE",132,1,0,"Pendiente"],
+  ["SASHA","BEIGE",133,1,0,"Pendiente"],
+  ["VALERIA","CAMEL",136,2,0,"Pendiente"],
+  ["AVRIL","NEGRO",148,1,0,"Pendiente"],
+  ["EMY","NEGRO",160,1,0,"Pendiente"],
+  ["MAFFER","NEGRO",162,2,0,"Pendiente"],
+  ["AVRIL","NEGRO",168,0,0,"Completo"],
+  ["EMY","NEGRO",173,2,0,"Pendiente"],
+  ["EMY","BEIGE",192,2,0,"Pendiente"],
+  ["EMY","BEIGE",193,2,0,"Pendiente"],
+  ["EMY","BEIGE",194,2,0,"Pendiente"],
+  ["EMY","BEIGE",195,2,0,"Pendiente"],
+  ["MARIFE","NEGRO",198,2,0,"Pendiente"],
+  ["MARIFE","NEGRO",199,2,0,"Pendiente"],
+  ["MARIFE","BEIGE",203,2,0,"Pendiente"],
+  ["MARIFE","BEIGE",204,2,0,"Pendiente"],
+  ["MARIFE","BEIGE",205,2,0,"Pendiente"],
+  ["MARIFE","BEIGE",206,2,0,"Pendiente"],
+  ["MARIFE","NEGRO",207,2,0,"Pendiente"],
+  ["MARIFE","NEGRO",208,3,0,"Pendiente"],
+  ["EMY","NEGRO",224,2,0,"Pendiente"],
+  ["EMY","NEGRO",225,0,0,"Completo"],
+  ["EMY","VINO",226,2,0,"Pendiente"],
+  ["EMY","VINO",227,2,0,"Pendiente"],
+  ["ARIA","NEGRO",230,0,0,"Completo"],
+  ["VALERIA","NEGRO",242,2,0,"Pendiente"],
+  ["VALERIA","NEGRO",243,2,0,"Pendiente"],
+  ["EMY","VINO",248,1,0,"Pendiente"],
+  ["MARIFE","NEGRO",250,3,0,"Pendiente"],
+  ["MARIFE","NEGRO",252,6,0,"Pendiente"],
+  ["ARIA","MARRON",262,1,0,"Pendiente"],
+  ["AVRIL","CAMEL",265,1,0,"Pendiente"],
+  ["GALA","NEGRO",542,1,0,"Pendiente"],
+  ["GALA","NEGRO",543,1,0,"Pendiente"],
+  ["GALA","MARRON",594,2,0,"Pendiente"],
+  ["CIELO","ACERO",538,2,0,"Pendiente"],
+  ["CIELO","ACERO",539,1,0,"Pendiente"],
+  ["CIELO","NEGRO",547,1,0,"Pendiente"],
+  ["ARLETH","BEIGE",644,2,0,"Pendiente"],
+  ["ARLETH","NEGRO",646,2,0,"Pendiente"],
+];
+
+const EXAMPLE_MULTI = [
+  {modelo:"GRACE", color:"NEGRO/MARRON", op:9001, example:true, tallas:[
+    {t:35,pedido:6,recibido:6},{t:36,pedido:8,recibido:5},{t:37,pedido:10,recibido:4},
+    {t:38,pedido:8,recibido:2},{t:39,pedido:6,recibido:0},{t:40,pedido:4,recibido:0}
+  ]},
+  {modelo:"SASHA", color:"CAMEL", op:9002, example:true, tallas:[
+    {t:35,pedido:4,recibido:4},{t:36,pedido:6,recibido:6},{t:37,pedido:6,recibido:3},
+    {t:38,pedido:4,recibido:0}
+  ]},
+];
+
+function isoDaysAgo(n){
+  const d = new Date();
+  d.setHours(0,0,0,0);
+  d.setDate(d.getDate()-n);
+  return d.toISOString().slice(0,10);
+}
+
+const EVENTS = [
+  {fecha:isoDaysAgo(0), op:38,  clase:"A", cantidad:0},
+  {fecha:isoDaysAgo(0), op:192, clase:"A", cantidad:2},
+  {fecha:isoDaysAgo(0), op:148, clase:"B", cantidad:1},
+  {fecha:isoDaysAgo(1), op:111, clase:"A", cantidad:2},
+  {fecha:isoDaysAgo(1), op:226, clase:"A", cantidad:1},
+  {fecha:isoDaysAgo(2), op:242, clase:"A", cantidad:2},
+  {fecha:isoDaysAgo(2), op:40,  clase:"C", cantidad:1},
+  {fecha:isoDaysAgo(3), op:198, clase:"A", cantidad:2},
+  {fecha:isoDaysAgo(3), op:68,  clase:"B", cantidad:1},
+  {fecha:isoDaysAgo(4), op:84,  clase:"A", cantidad:2},
+  {fecha:isoDaysAgo(4), op:250, clase:"A", cantidad:3},
+  {fecha:isoDaysAgo(5), op:114, clase:"A", cantidad:2},
+  {fecha:isoDaysAgo(5), op:49,  clase:"C", cantidad:1},
+  {fecha:isoDaysAgo(6), op:193, clase:"A", cantidad:2},
+  {fecha:isoDaysAgo(6), op:56,  clase:"A", cantidad:2},
+  {fecha:isoDaysAgo(9), op:129, clase:"A", cantidad:1},
+  {fecha:isoDaysAgo(10),op:132, clase:"B", cantidad:1},
+];
+
+function buildDataset(){
+  const rows = REAL_OPS.map(([modelo,color,op,pedido,recibido,estado])=>({
+    modelo,color,op,example:false,
+    tallas:[{t:35,pedido,recibido}],
+  }));
+  const all = rows.concat(EXAMPLE_MULTI);
+  all.forEach(r=>{
+    const totalPedido = r.tallas.reduce((s,t)=>s+t.pedido,0);
+    const totalRecibido = r.tallas.reduce((s,t)=>s+t.recibido,0);
+    r.totalPedido = totalPedido;
+    r.totalRecibido = totalRecibido;
+    r.estado = totalPedido===0 || totalRecibido>=totalPedido ? "Completo" : "Pendiente";
+    r.pct = totalPedido===0 ? 100 : Math.round(100*totalRecibido/totalPedido);
+  });
+  return all;
+}
+const DATA = buildDataset();
+
+function groupBy(arr, key){
+  const m = new Map();
+  arr.forEach(x=>{
+    const k = x[key];
+    if(!m.has(k)) m.set(k, []);
+    m.get(k).push(x);
+  });
+  return m;
+}
+function rollup(list){
+  const pedido = list.reduce((s,x)=>s+x.totalPedido,0);
+  const recibido = list.reduce((s,x)=>s+x.totalRecibido,0);
+  const pct = pedido===0 ? 100 : Math.round(100*recibido/pedido);
+  const pend = list.filter(x=>x.estado==="Pendiente").length;
+  return {pedido,recibido,pct,pend,count:list.length};
+}
+function barHtml(pct, done){
+  return '<div class="bar'+(done?' done':'')+'"><i style="width:'+pct+'%"></i></div><span class="bar-pct">'+pct+'%</span>';
+}
+const COLOR_DOT = {
+  NEGRO:"#111", BEIGE:"#D8C6A6", CAMEL:"#C08A4E", MARRON:"#6B4226", VERDE:"#4C7A55",
+  AZUL:"#3A6EA5", VINO:"#6E2436", MORADO:"#6C4A8C", ACERO:"#7C8B93", BLANCO:"#E9E9E4",
+};
+
+function getFiltered(filter, query){
+  const q = (query||"").trim().toUpperCase();
+  return DATA.filter(r=>{
+    if(filter!=="all" && r.estado!==filter) return false;
+    if(!q) return true;
+    return r.modelo.includes(q) || r.color.includes(q) || String(r.op).includes(q);
+  });
+}
+
+function renderTree(filtered){
+  document.getElementById('emptyMsg').style.display = filtered.length? 'none':'block';
+  const stats = rollup(filtered);
+  document.getElementById('stOps').textContent = filtered.length;
+  document.getElementById('stPend').textContent = filtered.filter(r=>r.estado==="Pendiente").length;
+  document.getElementById('stOk').textContent = filtered.filter(r=>r.estado==="Completo").length;
+  document.getElementById('stPct').textContent = filtered.length ? stats.pct+"%" : "–";
+
+  const byModelo = groupBy(filtered, "modelo");
+  const modelos = [...byModelo.keys()].sort();
+
+  let html = "";
+  modelos.forEach(modelo=>{
+    const modeloRows = byModelo.get(modelo);
+    const mRoll = rollup(modeloRows);
+    const byColor = groupBy(modeloRows, "color");
+    const colores = [...byColor.keys()].sort();
+
+    html += '<div class="node lvl-modelo"><div class="node-row" data-toggle><span class="twist">▸</span>'+
+      '<span class="node-label"><span class="node-title">'+modelo+'</span>'+
+      '<span class="node-count">'+mRoll.count+' OP · '+mRoll.pend+' pend.</span></span>'+
+      '<div class="node-bar-wrap">'+barHtml(mRoll.pct, mRoll.pct>=100)+'</div></div><div class="node-body">';
+
+    colores.forEach(color=>{
+      const colorRows = byColor.get(color);
+      const cRoll = rollup(colorRows);
+      const dot = COLOR_DOT[color.split("/")[0]] || "#999";
+      html += '<div class="node lvl-color"><div class="node-row" data-toggle><span class="twist">▸</span>'+
+        '<span class="node-label"><span style="display:inline-block;width:9px;height:9px;border-radius:3px;'+
+        'background:'+dot+';border:1px solid rgba(0,0,0,.15);flex:none;"></span>'+
+        '<span class="node-title">'+color+'</span>'+
+        '<span class="node-count">'+cRoll.count+' OP · '+cRoll.pend+' pend.</span></span>'+
+        '<div class="node-bar-wrap">'+barHtml(cRoll.pct, cRoll.pct>=100)+'</div></div><div class="node-body">';
+
+      colorRows.sort((a,b)=>a.op-b.op).forEach(r=>{
+        const tallaRows = r.tallas.map(t=>{
+          const p = t.pedido===0?100:Math.round(100*t.recibido/t.pedido);
+          const done = t.pedido===0 || t.recibido>=t.pedido;
+          return '<div class="talla-row"><span class="talla-num">'+t.t+'</span>'+
+            '<span class="talla-qty">'+t.recibido+'/'+t.pedido+' pares</span>'+
+            barHtml(p, done)+
+            '<span class="talla-estado '+(done?'ok':'pend')+'">'+(done?'Completo':'Pendiente')+'</span></div>';
+        }).join("");
+
+        html += '<div class="op"><div class="op-row" data-toggle><span class="twist">▸</span>'+
+          '<span class="op-tag">OP '+r.op+'</span>'+
+          '<span class="op-meta">'+r.tallas.length+' talla'+(r.tallas.length>1?'s':'')+
+          (r.example?'<span class="example-flag">EJEMPLO</span>':'')+'</span>'+
+          '<div class="node-bar-wrap">'+barHtml(r.pct, r.estado==="Completo")+'</div>'+
+          '<span class="badge '+(r.estado==='Completo'?'ok':'pend')+'">'+r.estado+'</span></div>'+
+          '<div class="op-detail">'+tallaRows+'</div></div>';
+      });
+
+      html += '</div></div>';
+    });
+
+    html += '</div></div>';
+  });
+
+  document.getElementById('tree').innerHTML = html;
+
+  document.querySelectorAll('[data-toggle]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const owner = el.closest('.node, .op');
+      owner.classList.toggle('open');
+    });
+  });
+}
+
+function renderKPIs(filtered){
+  const opSet = new Set(filtered.map(r=>r.op));
+  const start = new Date(document.getElementById('dFrom').value+"T00:00:00");
+  const end = new Date(document.getElementById('dTo').value+"T23:59:59");
+  const days = Math.max(1, Math.round((end-start)/86400000)+1);
+  document.getElementById('rangeDaysLbl').textContent = days+' día'+(days>1?'s':'')+' seleccionado'+(days>1?'s':'');
+
+  const evs = EVENTS.filter(e=>{
+    if(!opSet.has(e.op)) return false;
+    const d = new Date(e.fecha+"T12:00:00");
+    return d >= start && d <= end;
+  });
+  const a = evs.filter(e=>e.clase==="A").reduce((s,e)=>s+e.cantidad,0);
+  const b = evs.filter(e=>e.clase==="B").reduce((s,e)=>s+e.cantidad,0);
+  const c = evs.filter(e=>e.clase==="C").reduce((s,e)=>s+e.cantidad,0);
+  const total = a+b+c;
+  const pedido = filtered.reduce((s,r)=>s+r.totalPedido,0);
+
+  document.getElementById('kpiEntregado').textContent = pedido ? (Math.round(1000*total/pedido)/10)+"%" : "–";
+  document.getElementById('kpiB').textContent = total ? (Math.round(1000*b/total)/10)+"%" : "0%";
+  document.getElementById('kpiC').textContent = total ? (Math.round(1000*c/total)/10)+"%" : "0%";
+  document.getElementById('kpiDia').textContent = (Math.round(10*total/days)/10);
+}
+
+function renderAll(keepState){
+  const filtered = getFiltered(currentFilter, document.getElementById('q').value);
+  renderTree(filtered);
+  renderKPIs(filtered);
+  if(!keepState) expandAll();
+}
+function expandAll(){
+  document.querySelectorAll('#tree .node, #tree .op').forEach(el=>el.classList.add('open'));
+}
+function collapseAll(){
+  document.querySelectorAll('#tree .node, #tree .op').forEach(el=>el.classList.remove('open'));
+}
+
+let currentFilter = "all";
+document.getElementById('filters').addEventListener('click', (e)=>{
+  const btn = e.target.closest('.chip');
+  if(!btn) return;
+  document.querySelectorAll('#filters .chip').forEach(c=>c.setAttribute('aria-pressed','false'));
+  btn.setAttribute('aria-pressed','true');
+  currentFilter = btn.dataset.f;
+  renderAll();
+});
+document.getElementById('q').addEventListener('input', ()=>renderAll());
+document.getElementById('dFrom').addEventListener('change', ()=>renderAll(true));
+document.getElementById('dTo').addEventListener('change', ()=>renderAll(true));
+document.getElementById('btnLast7').addEventListener('click', ()=>{
+  document.getElementById('dFrom').value = isoDaysAgo(6);
+  document.getElementById('dTo').value = isoDaysAgo(0);
+  renderAll(true);
+});
+document.getElementById('btnExpand').addEventListener('click', expandAll);
+document.getElementById('btnCollapse').addEventListener('click', collapseAll);
+
+document.getElementById('dFrom').value = isoDaysAgo(6);
+document.getElementById('dTo').value = isoDaysAgo(0);
+renderAll();
+</script>
+</body>
+</html>
