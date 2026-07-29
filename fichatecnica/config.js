@@ -8,7 +8,7 @@
  */
 window.DantixConfig = {
   appName: 'Joli Joli · Technical Sheets',
-  appsScriptUrl: 'https://script.google.com/macros/s/PEGA_AQUI_TU_DEPLOYMENT_ID/exec',
+  appsScriptUrl: 'https://script.google.com/macros/s/AKfycbxvsWkrrDPbx5w3lxngSBSYRKWsFsdiRTXBhsh-zSn-masmJnPr-RpZuBx8VZHmGaZa/exec',
   searchDebounceMs: 250,
   minCharsForAutocomplete: 1,
   theme: {
