@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fourier Draw — dibuja palabras con círculos</title>
+<style>
+  :root{
+    --bg: #0a0d10;
+    --panel: #12171b;
+    --panel-border: #1f272d;
+    --trace: #39ff8e;
+    --trace-dim: rgba(57,255,142,0.25);
+    --epi: #ffb020;
+    --epi-dim: rgba(255,176,32,0.35);
+    --text: #dfe8ea;
+    --text-dim: #7c8a8f;
+    --accent2: #4fb3ff;
+  }
+  *{ box-sizing: border-box; }
+  html,body{
+    margin:0; padding:0; background:var(--bg); color:var(--text);
+    font-family: 'JetBrains Mono','Space Mono',ui-monospace,Menlo,Consolas,monospace;
+    min-height:100vh;
+  }
+  .wrap{ max-width:960px; margin:0 auto; padding:28px 18px 60px; }
+  header{ margin-bottom:22px; }
+  .eyebrow{
+    font-size:11px; letter-spacing:0.22em; text-transform:uppercase;
+    color:var(--trace); opacity:0.8; margin:0 0 8px;
+  }
+  h1{
+    font-size:clamp(22px,4vw,34px); margin:0 0 8px; font-weight:700;
+    letter-spacing:-0.01em;
+  }
+  p.sub{ color:var(--text-dim); font-size:13.5px; line-height:1.55; margin:0; max-width:64ch; }
+
+  .panel{
+    background:var(--panel); border:1px solid var(--panel-border);
+    border-radius:10px; padding:16px; margin-top:20px;
+  }
+
+  .controls{
+    display:flex; flex-wrap:wrap; gap:12px; align-items:flex-end; margin-bottom:6px;
+  }
+  .field{ display:flex; flex-direction:column; gap:6px; }
+  .field label{ font-size:10.5px; color:var(--text-dim); letter-spacing:0.08em; text-transform:uppercase; }
+  input[type=text]{
+    background:#0d1215; border:1px solid var(--panel-border); color:var(--text);
+    padding:9px 12px; border-radius:6px; font-family:inherit; font-size:15px;
+    width:220px; outline:none;
+  }
+  input[type=text]:focus{ border-color:var(--trace); }
+  input[type=range]{ width:150px; accent-color:var(--trace); }
+  .num{ font-size:11px; color:var(--accent2); min-width:2ch; display:inline-block; }
+
+  button{
+    font-family:inherit; font-size:13px; letter-spacing:0.03em; font-weight:700;
+    background:var(--trace); color:#04120a; border:none; border-radius:6px;
+    padding:9px 18px; cursor:pointer; text-transform:uppercase;
+  }
+  button:active{ transform:translateY(1px); }
+  button.ghost{
+    background:transparent; color:var(--text); border:1px solid var(--panel-border);
+  }
+  .btnrow{ display:flex; gap:8px; }
+
+  canvas{ width:100%; height:auto; display:block; border-radius:8px; background:#070a0c; margin-top:14px; border:1px solid var(--panel-border); }
+
+  .meta{ display:flex; justify-content:space-between; margin-top:8px; font-size:11px; color:var(--text-dim); }
+  .meta b{ color:var(--epi); font-weight:600; }
+
+  footer{ margin-top:26px; font-size:11.5px; color:var(--text-dim); line-height:1.6; }
+  footer b{ color:var(--text); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Series de Fourier · Epiciclos</p>
+    <h1>Cualquier palabra, dibujada con círculos girando</h1>
+    <p class="sub">Escribe una palabra o letra. Se extrae su contorno, se descompone en una suma de círculos rotando a distintas frecuencias (Transformada de Fourier), y la punta del último círculo dibuja el trazo — igual que el ejemplo que viste.</p>
+  </header>
+
+  <div class="panel">
+    <div class="controls">
+      <div class="field">
+        <label for="txt">Palabra</label>
+        <input id="txt" type="text" maxlength="14" value="π" />
+      </div>
+      <div class="field">
+        <label>Círculos (armónicos) <span class="num" id="harmVal">40</span></label>
+        <input id="harm" type="range" min="3" max="120" value="40" />
+      </div>
+      <div class="field">
+        <label>Velocidad <span class="num" id="speedVal">1.0×</span></label>
+        <input id="speed" type="range" min="3" max="30" value="10" />
+      </div>
+      <div class="btnrow">
+        <button id="drawBtn">Dibujar</button>
+        <button id="playBtn" class="ghost">Pausar</button>
+      </div>
+    </div>
+    <canvas id="cv" width="900" height="380"></canvas>
+    <div class="meta">
+      <span>Puntos de contorno: <b id="ptCount">–</b></span>
+      <span>Armónicos activos: <b id="harmActive">–</b></span>
+    </div>
+  </div>
+
+  <footer>
+    Cómo funciona: el texto se renderiza en un lienzo oculto para hallar el <b>contorno</b> de sus letras (píxeles de borde). Ese contorno se trata como un camino cerrado de números complejos y se le aplica una <b>Transformada Discreta de Fourier</b>: cada armónico es un círculo con un radio (amplitud) y una velocidad de giro (frecuencia) propios. Sumando sus vectores, uno tras otro, la punta final reconstruye la forma original.
+  </footer>
+</div>
+
+<script>
+(function(){
+  const cv = document.getElementById('cv');
+  const ctx = cv.getContext('2d');
+  const txtInput = document.getElementById('txt');
+  const harmInput = document.getElementById('harm');
+  const speedInput = document.getElementById('speed');
+  const harmVal = document.getElementById('harmVal');
+  const speedVal = document.getElementById('speedVal');
+  const drawBtn = document.getElementById('drawBtn');
+  const playBtn = document.getElementById('playBtn');
+  const ptCountEl = document.getElementById('ptCount');
+  const harmActiveEl = document.getElementById('harmActive');
+
+  const W = cv.width, H = cv.height;
+  const CX = W/2, CY = H/2;
+
+  let terms = [];      // {re,im,freq,amp,phase} sorted by amp desc
+  let N = 0;
+  let angle = 0;
+  let trail = [];
+  let playing = true;
+  let rafId = null;
+
+  // ---------- 1. Text -> boundary pixels ----------
+  function getBoundaryPoints(text){
+    const measureCv = document.createElement('canvas');
+    const mctx = measureCv.getContext('2d');
+    const fontSize = 190;
+    mctx.font = `900 ${fontSize}px Arial, sans-serif`;
+    const tw = Math.max(mctx.measureText(text).width, 40);
+    const pad = 60;
+    const cw = Math.ceil(tw) + pad*2;
+    const ch = fontSize + pad*2;
+    measureCv.width = cw;
+    measureCv.height = ch;
+    mctx.font = `900 ${fontSize}px Arial, sans-serif`;
+    mctx.fillStyle = '#000';
+    mctx.fillRect(0,0,cw,ch);
+    mctx.fillStyle = '#fff';
+    mctx.textBaseline = 'alphabetic';
+    mctx.fillText(text, pad, pad + fontSize*0.78);
+
+    const img = mctx.getImageData(0,0,cw,ch).data;
+    const isFg = (x,y) => {
+      if(x<0||y<0||x>=cw||y>=ch) return false;
+      return img[(y*cw+x)*4] > 128;
+    };
+
+    const boundary = [];
+    for(let y=0;y<ch;y++){
+      for(let x=0;x<cw;x++){
+        if(!isFg(x,y)) continue;
+        if(!isFg(x+1,y)||!isFg(x-1,y)||!isFg(x,y+1)||!isFg(x,y-1)){
+          boundary.push({x,y});
+        }
+      }
+    }
+    return boundary;
+  }
+
+  // downsample to a manageable count
+  function downsample(pts, maxCount){
+    if(pts.length <= maxCount) return pts;
+    const stride = Math.ceil(pts.length/maxCount);
+    const out = [];
+    for(let i=0;i<pts.length;i+=stride) out.push(pts[i]);
+    return out;
+  }
+
+  // greedy nearest-neighbor ordering
+  function orderPath(pts){
+    const remaining = pts.slice();
+    const ordered = [];
+    let current = remaining.shift();
+    ordered.push(current);
+    while(remaining.length){
+      let bestIdx = 0, bestD = Infinity;
+      for(let i=0;i<remaining.length;i++){
+        const dx = remaining[i].x-current.x, dy = remaining[i].y-current.y;
+        const d = dx*dx+dy*dy;
+        if(d<bestD){ bestD=d; bestIdx=i; }
+      }
+      current = remaining.splice(bestIdx,1)[0];
+      ordered.push(current);
+    }
+    return ordered;
+  }
+
+  // resample ordered path (closed loop) to M evenly spaced points by arc length
+  function resample(pts, M){
+    const closed = pts.concat([pts[0]]);
+    const dists = [0];
+    for(let i=1;i<closed.length;i++){
+      const dx = closed[i].x-closed[i-1].x, dy = closed[i].y-closed[i-1].y;
+      dists.push(dists[i-1] + Math.hypot(dx,dy));
+    }
+    const total = dists[dists.length-1];
+    const out = [];
+    for(let i=0;i<M;i++){
+      const target = (i/M)*total;
+      let lo=0, hi=dists.length-1;
+      while(lo<hi-1){
+        const mid=(lo+hi)>>1;
+        if(dists[mid]<target) lo=mid; else hi=mid;
+      }
+      const segLen = dists[hi]-dists[lo] || 1;
+      const t = (target-dists[lo])/segLen;
+      const p0 = closed[lo], p1 = closed[hi];
+      out.push({ x: p0.x+(p1.x-p0.x)*t, y: p0.y+(p1.y-p0.y)*t });
+    }
+    return out;
+  }
+
+  // ---------- 2. Discrete Fourier Transform ----------
+  function computeDFT(points){
+    const n = points.length;
+    const result = [];
+    for(let k=0;k<n;k++){
+      let re=0, im=0;
+      for(let t=0;t<n;t++){
+        const phi = (2*Math.PI*k*t)/n;
+        const x = points[t].x, y = points[t].y;
+        re += x*Math.cos(phi) + y*Math.sin(phi);
+        im += -x*Math.sin(phi) + y*Math.cos(phi);
+      }
+      re/=n; im/=n;
+      const freq = k<=n/2 ? k : k-n;
+      const amp = Math.hypot(re,im);
+      const phase = Math.atan2(im,re);
+      result.push({freq, amp, phase});
+    }
+    result.sort((a,b)=>b.amp-a.amp);
+    return result;
+  }
+
+  // ---------- 3. Build path from a word ----------
+  function buildFromText(text){
+    if(!text || !text.trim()) text = '?';
+    const raw = getBoundaryPoints(text);
+    const down = downsample(raw, 650);
+    const ordered = orderPath(down);
+    const M = 160;
+    let points = resample(ordered, M);
+
+    // center at origin
+    let cxSum=0, cySum=0;
+    points.forEach(p=>{ cxSum+=p.x; cySum+=p.y; });
+    const meanX = cxSum/points.length, meanY = cySum/points.length;
+    points = points.map(p=>({x:p.x-meanX, y:p.y-meanY}));
+
+    // scale to fit canvas
+    let maxX=0,maxY=0;
+    points.forEach(p=>{ maxX=Math.max(maxX,Math.abs(p.x)); maxY=Math.max(maxY,Math.abs(p.y)); });
+    const targetW = W*0.42, targetH = H*0.36;
+    const scale = Math.min(targetW/(maxX||1), targetH/(maxY||1));
+    points = points.map(p=>({x:p.x*scale, y:p.y*scale}));
+
+    ptCountEl.textContent = points.length;
+    terms = computeDFT(points);
+    N = points.length;
+    angle = 0;
+    trail = [];
+  }
+
+  // ---------- 4. Animate ----------
+  function draw(){
+    const harmCount = Math.min(parseInt(harmInput.value,10), terms.length);
+    harmActiveEl.textContent = harmCount;
+
+    ctx.clearRect(0,0,W,H);
+
+    // epicycles
+    let x = CX, y = CY;
+    ctx.lineWidth = 1;
+    for(let i=0;i<harmCount;i++){
+      const {freq, amp, phase} = terms[i];
+      const prevX = x, prevY = y;
+      const a = freq*angle + phase;
+      x += amp*Math.cos(a);
+      y += amp*Math.sin(a);
+
+      if(amp > 0.6){
+        ctx.beginPath();
+        ctx.strokeStyle = 'rgba(255,176,32,0.22)';
+        ctx.arc(prevX, prevY, amp, 0, Math.PI*2);
+        ctx.stroke();
+      }
+      ctx.beginPath();
+      ctx.strokeStyle = 'rgba(255,176,32,0.55)';
+      ctx.moveTo(prevX, prevY);
+      ctx.lineTo(x,y);
+      ctx.stroke();
+    }
+
+    trail.push({x,y});
+
+    // trail
+    ctx.beginPath();
+    ctx.strokeStyle = '#39ff8e';
+    ctx.lineWidth = 2.4;
+    ctx.shadowColor = 'rgba(57,255,142,0.65)';
+    ctx.shadowBlur = 8;
+    trail.forEach((p,i)=>{
+      if(i===0) ctx.moveTo(p.x,p.y); else ctx.lineTo(p.x,p.y);
+    });
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    // tracer dot
+    ctx.beginPath();
+    ctx.fillStyle = '#fff';
+    ctx.arc(x,y,3,0,Math.PI*2);
+    ctx.fill();
+
+    if(playing){
+      const speed = parseInt(speedInput.value,10);
+      angle += (2*Math.PI/300) * (speed/10);
+      if(angle >= 2*Math.PI){
+        angle -= 2*Math.PI;
+        trail = [];
+      }
+    }
+    rafId = requestAnimationFrame(draw);
+  }
+
+  // ---------- UI wiring ----------
+  function redraw(){
+    buildFromText(txtInput.value);
+  }
+
+  harmInput.addEventListener('input', ()=>{ harmVal.textContent = harmInput.value; });
+  speedInput.addEventListener('input', ()=>{ speedVal.textContent = (speedInput.value/10).toFixed(1)+'×'; });
+  drawBtn.addEventListener('click', redraw);
+  txtInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter') redraw(); });
+  playBtn.addEventListener('click', ()=>{
+    playing = !playing;
+    playBtn.textContent = playing ? 'Pausar' : 'Reanudar';
+  });
+
+  redraw();
+  draw();
+})();
+</script>
+</body>
+</html>
