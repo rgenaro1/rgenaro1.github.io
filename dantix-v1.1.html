@@ -750,7 +750,11 @@
       </div>
     </div>
     <div class="canvas-wrap"><canvas id="canvasCorrected"></canvas></div>
-    <div class="hint">Haz clic sobre una zona de <b>solo fondo</b> (sin manta) en la imagen corregida para calibrar el color automáticamente. Ajusta los deslizadores si hace falta.</div>
+    <div class="hint">La manta se segmenta automáticamente al corregir la perspectiva (por brillo). Si algo quedó mal, haz clic sobre una zona de <b>solo fondo</b> para calibrar por color, o ajusta los deslizadores.</div>
+
+    <div class="btn-row" style="margin-top:12px;">
+      <button class="ghost" id="btnSegmentarBrillo">🔆 Volver a detectar por brillo</button>
+    </div>
 
     <div style="margin-top:16px;">
       <div class="slider-row"><span>H min</span><input type="range" id="hMin" min="0" max="179" value="0"><span id="hMinV">0</span></div>
@@ -4355,8 +4359,8 @@ document.getElementById('btnCorregir').addEventListener('click', () => {
 
   document.getElementById('step3').classList.remove('disabled');
   document.getElementById('step4').classList.add('disabled');
-  setStatus('Perspectiva corregida. Calibra el color de fondo.', 'ok');
-  autoCalibrarPorBorde();
+  setStatus('Perspectiva corregida. Segmentando automáticamente...', 'ok');
+  segmentarPorBrillo();
 });
 
 // ---------- STEP 3: calibración de color ----------
@@ -4387,6 +4391,147 @@ function enZonaExcluida(x, y, zonas){
   }
   return false;
 }
+
+// Segmentación automática por brillo (Otsu sobre el canal V), con la
+// polaridad (manta = mas clara o mas oscura que el fondo) decidida por el
+// anillo de borde. Por que esto en vez de calibrar un rango HSV: el Hue se
+// vuelve ruido en superficies casi sin color (blancos, negros, reflejos de
+// barniz), y la Saturacion se "apaga" (rango 0-255, sin filtrar nada) apenas
+// un solo brillo de luz directa contamina la muestra de borde -- esto rompio
+// la calibracion HSV en varios casos reales (mesa de madera con reflejo,
+// cuero negro sobre tabla blanca). Otsu evita todo eso: no depende de Hue ni
+// Saturacion, solo busca automaticamente el punto de corte que mejor separa
+// la imagen en dos grupos de brillo, que es exactamente el caso de uso real
+// (cuero claramente mas claro o mas oscuro que la superficie de fondo).
+function segmentarPorBrillo(){
+  if(!correctedMat){ setStatus('Corrige la perspectiva primero.', 'err'); return; }
+
+  const hsv = new cv.Mat();
+  cv.cvtColor(correctedMat, hsv, cv.COLOR_RGBA2RGB);
+  cv.cvtColor(hsv, hsv, cv.COLOR_RGB2HSV);
+  const w = hsv.cols, h = hsv.rows;
+
+  const planes = new cv.MatVector();
+  cv.split(hsv, planes);
+  const vChan = planes.get(2).clone();
+  for(let i=0;i<planes.size();i++) planes.get(i).delete();
+  planes.delete();
+  hsv.delete();
+
+  cv.GaussianBlur(vChan, vChan, new cv.Size(7,7), 0);
+  const th = new cv.Mat();
+  cv.threshold(vChan, th, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU);
+  vChan.delete();
+
+  // decidir polaridad con el anillo de borde: la clase que domina el borde
+  // es "fondo" por definicion (asi se coloca siempre la manta, con margen de
+  // fondo alrededor) -> la manta es la clase CONTRARIA a la mayoritaria en
+  // el borde. No asumimos de antemano si el fondo es mas claro o mas oscuro
+  // que el cuero, porque cambia foto a foto (tabla blanca + cuero negro,
+  // mesa oscura + cuero claro, etc).
+  const zonas = zonasEsquinaArUco(w, h);
+  const m = Math.max(2, Math.round(Math.min(w,h) * 0.03));
+  let bordeTotal = 0, bordeEncendidos = 0;
+  const contarBorde = (x0,y0,x1,y1) => {
+    for(let y=y0;y<y1;y+=2) for(let x=x0;x<x1;x+=2){
+      if(enZonaExcluida(x,y,zonas)) continue;
+      bordeTotal++;
+      if(th.ucharPtr(y,x)[0] > 0) bordeEncendidos++;
+    }
+  };
+  contarBorde(0,0,w,m);
+  contarBorde(0,h-m,w,h);
+  contarBorde(0,0,m,h);
+  contarBorde(w-m,0,w,h);
+  const fondoEsEncendido = bordeTotal > 0 && (bordeEncendidos/bordeTotal) > 0.5;
+
+  const maskManta = new cv.Mat();
+  if(fondoEsEncendido){
+    cv.bitwise_not(th, maskManta);
+  } else {
+    th.copyTo(maskManta);
+  }
+  th.delete();
+
+  // mismo criterio de limpieza que el resto del flujo: anular las esquinas
+  // del marcador ArUco y quedarse solo con el contorno mas grande
+  const zonasArUco = zonasEsquinaArUco(maskManta.cols, maskManta.rows);
+  zonasArUco.forEach(z => {
+    const roi = maskManta.roi(new cv.Rect(z.x0, z.y0, z.x1-z.x0, z.y1-z.y0));
+    roi.setTo(new cv.Scalar(0));
+    roi.delete();
+  });
+
+  const contours = new cv.MatVector();
+  const hierarchy = new cv.Mat();
+  cv.findContours(maskManta, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+  let maxArea = 0, maxIdx = -1;
+  for(let i=0;i<contours.size();i++){
+    const a = cv.contourArea(contours.get(i));
+    if(a > maxArea){ maxArea = a; maxIdx = i; }
+  }
+  const maskLimpia = cv.Mat.zeros(maskManta.rows, maskManta.cols, cv.CV_8U);
+  if(maxIdx >= 0){
+    cv.drawContours(maskLimpia, contours, maxIdx, new cv.Scalar(255), -1);
+  }
+  hierarchy.delete(); contours.delete(); maskManta.delete();
+
+  if(maxIdx < 0){
+    maskLimpia.delete();
+    setStatus('No se pudo separar la manta del fondo automáticamente. Ajusta los deslizadores HSV a mano.', 'err');
+    return;
+  }
+
+  fitCanvas(canvasMask, maskLimpia.cols, maskLimpia.rows, 340);
+  cv.imshow(canvasMask, maskLimpia);
+
+  const overlay = correctedMat.clone();
+  for(let y=0;y<overlay.rows;y++){
+    for(let x=0;x<overlay.cols;x++){
+      if(maskLimpia.ucharPtr(y,x)[0] > 0){
+        const idx = (y*overlay.cols+x)*4;
+        overlay.data[idx]   = overlay.data[idx]*0.4   + 0*0.6;
+        overlay.data[idx+1] = overlay.data[idx+1]*0.4 + 255*0.6;
+        overlay.data[idx+2] = overlay.data[idx+2]*0.4 + 0*0.6;
+      }
+    }
+  }
+  fitCanvas(canvasOverlay, overlay.cols, overlay.rows, 340);
+  cv.imshow(canvasOverlay, overlay);
+  overlay.delete();
+
+  if(window._maskLimpia) window._maskLimpia.delete();
+  window._maskLimpia = maskLimpia;
+
+  // sincronizar los deslizadores HSV con un rango de fondo aproximado
+  // (muestreado de lo que quedo FUERA de la mascara de Otsu), solo para que
+  // si el usuario los usa despues como respaldo manual arranquen de un punto
+  // razonable en vez de los valores de la manta anterior. setSliders() solo
+  // escribe los valores en pantalla, no vuelve a calcular la mascara -- asi
+  // no pisa el resultado de Otsu que acabamos de mostrar.
+  const hsv2 = new cv.Mat();
+  cv.cvtColor(correctedMat, hsv2, cv.COLOR_RGBA2RGB);
+  cv.cvtColor(hsv2, hsv2, cv.COLOR_RGB2HSV);
+  let hs=[], ss=[], vs=[];
+  for(let y=0;y<hsv2.rows;y+=4) for(let x=0;x<hsv2.cols;x+=4){
+    if(maskLimpia.ucharPtr(y,x)[0] === 0){
+      const p = hsv2.ucharPtr(y,x);
+      hs.push(p[0]); ss.push(p[1]); vs.push(p[2]);
+    }
+  }
+  hsv2.delete();
+  if(hs.length > 0){
+    const hLow = Math.max(0, percentile(hs,0.02) - 8);
+    const hHigh = Math.min(179, percentile(hs,0.98) + 8);
+    const sLow = Math.max(0, percentile(ss,0.02) - 40);
+    const vLow = Math.max(0, percentile(vs,0.02) - 40);
+    setSliders(hLow, hHigh, sLow, 255, vLow, 255);
+  }
+
+  setStatus('Segmentado automáticamente por brillo (Otsu). Si algo quedó mal, ajusta los deslizadores HSV para corregirlo a mano.', 'ok');
+}
+
+document.getElementById('btnSegmentarBrillo').addEventListener('click', segmentarPorBrillo);
 
 function autoCalibrarPorBorde(){
   // usa un anillo delgado del borde (2% del tamaño) como muestra inicial de fondo
@@ -4419,34 +4564,11 @@ function percentile(arr, p){
 }
 
 function aplicarRangoDesdeMuestras(hs, ss, vs){
-  // Antes: margenes fijos (+-8 en H, -40 en S/V) y S max / V max siempre en 255.
-  // Eso asumia que el fondo siempre es igual de uniforme y que "fondo" solo se
-  // distingue por tener S/V bajos, lo cual falla con sombras, gradiente de luz,
-  // o fondos con textura/brillo. Ahora el margen se calcula segun la dispersion
-  // real de la propia muestra de fondo (p2-p98), y se calcula tambien el techo
-  // real de S y V en vez de dejarlos fijos en 255.
-  const margenAdaptativo = (arr, minMargen, maxMargen) => {
-    const p2 = percentile(arr, 0.02);
-    const p98 = percentile(arr, 0.98);
-    const dispersion = p98 - p2;
-    // fondo muy uniforme (dispersion chica) -> margen chico, para no comerse cuero.
-    // fondo con sombras/gradiente (dispersion grande) -> margen mas amplio, para
-    // no dejar afuera zonas de fondo mas oscuras/claras que la muestra tipica.
-    return { p2, p98, margen: Math.min(maxMargen, Math.max(minMargen, dispersion * 0.6)) };
-  };
-
-  const h = margenAdaptativo(hs, 4, 15);
-  const s = margenAdaptativo(ss, 15, 60);
-  const v = margenAdaptativo(vs, 15, 60);
-
-  const hLow = Math.max(0, h.p2 - h.margen);
-  const hHigh = Math.min(179, h.p98 + h.margen);
-  const sLow = Math.max(0, s.p2 - s.margen);
-  const sHigh = Math.min(255, s.p98 + s.margen);
-  const vLow = Math.max(0, v.p2 - v.margen);
-  const vHigh = Math.min(255, v.p98 + v.margen);
-
-  setSliders(hLow, hHigh, sLow, sHigh, vLow, vHigh);
+  const hLow = Math.max(0, percentile(hs,0.02) - 8);
+  const hHigh = Math.min(179, percentile(hs,0.98) + 8);
+  const sLow = Math.max(0, percentile(ss,0.02) - 40);
+  const vLow = Math.max(0, percentile(vs,0.02) - 40);
+  setSliders(hLow, hHigh, sLow, 255, vLow, 255);
   actualizarMascara();
 }
 
