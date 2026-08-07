@@ -10,6 +10,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 
+<!-- Three.js — widget 3D del Poliedro de Durero -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/math/ConvexHull.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/geometries/ConvexGeometry.js"></script>
+
 <style>
   :root {
     --bg:        #ffffff;
@@ -754,8 +760,79 @@
       grid-template-columns: 1fr;
     }
 
-    .section-head { flex-direction: column; align-items: flex-start; gap: 10px; }
-    footer.site-footer { flex-direction: column; gap: 10px; text-align: center; }
+  /* ───────────────────────── Poliedro de Durero — 3D ───────────────────────── */
+  .polyhedron-section { padding-top: 0; }
+  .polyhedron-panel {
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 16px;
+  }
+  .polyhedron-hud {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .polyhedron-hud .ph-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .polyhedron-hud .ph-badge::before {
+    content: "";
+    width: 6px; height: 6px;
+    background: var(--red);
+    border-radius: 50%;
+  }
+  .ph-toggle {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    color: var(--ink-3);
+    cursor: pointer;
+    transition: all 180ms ease;
+  }
+  .ph-toggle:hover { border-color: var(--red); color: var(--red); }
+
+  .polyhedron-viewport {
+    position: relative;
+    width: 100%;
+    height: 440px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: radial-gradient(circle at 50% 40%, #ffffff 0%, var(--line-2) 100%);
+  }
+  .polyhedron-viewport canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    cursor: grab;
+  }
+  .polyhedron-viewport canvas:active { cursor: grabbing; }
+
+  .polyhedron-caption {
+    font-size: 13px;
+    color: var(--ink-3);
+    line-height: 1.6;
+    letter-spacing: -0.003em;
+    max-width: 640px;
+    margin-top: 16px;
+  }
+  .polyhedron-caption em { color: var(--ink-2); font-style: italic; }
+
+  @media (max-width: 880px) {
+    .polyhedron-viewport { height: 320px; }
   }
 </style>
 </head>
@@ -823,6 +900,25 @@
       </div>
     </div>
   </header>
+
+  <!-- Poliedro de Durero — pieza 3D de marca personal -->
+  <section id="poliedro" class="polyhedron-section">
+    <div class="polyhedron-panel">
+      <div class="polyhedron-hud">
+        <span class="ph-badge">Marca personal · 3D en vivo</span>
+        <button class="ph-toggle" id="phToggleRotate" aria-label="Pausar rotación" title="Pausar rotación">
+          <svg id="phPauseIcon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"></rect><rect x="14" y="4" width="4" height="16" rx="1"></rect></svg>
+          <svg id="phPlayIcon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="display:none;"><path d="M7 4l13 8-13 8V4z"></path></svg>
+        </button>
+      </div>
+      <div id="polyViewport" class="polyhedron-viewport">
+        <canvas id="polyCanvas"></canvas>
+      </div>
+      <p class="polyhedron-caption">
+        El mismo poliedro truncado del grabado <em>Melencolia I</em> de Alberto Durero (1514) que da forma a mi marca personal, reconstruido aquí en tres dimensiones. Arrastra para rotar, desplázate para acercar.
+      </p>
+    </div>
+  </section>
 
   <!-- Sobre -->
   <section id="sobre">
@@ -1335,6 +1431,148 @@
   </footer>
 
 </div>
+
+<!-- Poliedro de Durero — motor 3D (adaptado a la estética clara del sitio) -->
+<script>
+(function () {
+  var scene, camera, renderer, controls, container, canvas;
+  var solidMesh, wireframeMesh, pointMesh;
+  var autoRotate = true;
+
+  function init() {
+    container = document.getElementById('polyViewport');
+    canvas = document.getElementById('polyCanvas');
+    if (!container || !canvas || typeof THREE === 'undefined') return;
+
+    var width = container.clientWidth;
+    var height = container.clientHeight;
+
+    scene = new THREE.Scene();
+
+    camera = new THREE.PerspectiveCamera(42, width / height, 0.1, 1000);
+    camera.position.set(0, 1.6, 5.4);
+
+    renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x000000, 0);
+
+    controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.06;
+    controls.enablePan = false;
+    controls.minDistance = 3;
+    controls.maxDistance = 9;
+    controls.autoRotate = autoRotate;
+    controls.autoRotateSpeed = 1.1;
+
+    // Luz suave — pensada para fondo claro, no oscuro
+    scene.add(new THREE.AmbientLight(0xffffff, 1.0));
+    var key = new THREE.DirectionalLight(0xffffff, 0.9);
+    key.position.set(4, 6, 5);
+    scene.add(key);
+    var rim = new THREE.PointLight(0x0d9488, 1.4, 20);
+    rim.position.set(-4, -3, -4);
+    scene.add(rim);
+
+    buildDurerSolid();
+    window.addEventListener('resize', onResize);
+    animate();
+  }
+
+  // Geometría del Poliedro de Durero (romboedro truncado)
+  function generateVertices(trunc) {
+    var h = Math.sqrt(3);
+    var r1 = Math.sqrt(2);
+    var r2 = Math.sqrt(3 / 2);
+
+    var P1 = new THREE.Vector3(0, 0, h);
+    var P2 = new THREE.Vector3(r1, 0, 1 / h);
+    var P3 = new THREE.Vector3(-1 / r1, r2, 1 / h);
+    var P4 = new THREE.Vector3(-1 / r1, -r2, 1 / h);
+    var P5 = new THREE.Vector3(0, 0, -h);
+    var P6 = new THREE.Vector3(-r1, 0, -1 / h);
+    var P7 = new THREE.Vector3(1 / r1, -r2, -1 / h);
+    var P8 = new THREE.Vector3(1 / r1, r2, -1 / h);
+
+    var A1 = new THREE.Vector3().lerpVectors(P1, P2, trunc);
+    var A2 = new THREE.Vector3().lerpVectors(P1, P3, trunc);
+    var A3 = new THREE.Vector3().lerpVectors(P1, P4, trunc);
+    var B1 = new THREE.Vector3().lerpVectors(P5, P6, trunc);
+    var B2 = new THREE.Vector3().lerpVectors(P5, P7, trunc);
+    var B3 = new THREE.Vector3().lerpVectors(P5, P8, trunc);
+
+    return [A1, A2, A3, P2, P3, P4, P6, P7, P8, B1, B2, B3];
+  }
+
+  function buildDurerSolid() {
+    var points = generateVertices(0.35);
+    var geometry = new THREE.ConvexGeometry(points);
+    geometry.computeVertexNormals();
+    geometry.center();
+
+    var material = new THREE.MeshStandardMaterial({
+      color: 0xffffff,
+      roughness: 0.55,
+      metalness: 0.05,
+      transparent: true,
+      opacity: 0.88,
+      side: THREE.DoubleSide
+    });
+    solidMesh = new THREE.Mesh(geometry, material);
+
+    var wireGeo = new THREE.WireframeGeometry(geometry);
+    var wireMat = new THREE.LineBasicMaterial({ color: 0x0d9488, transparent: true, opacity: 0.9 });
+    wireframeMesh = new THREE.LineSegments(wireGeo, wireMat);
+    solidMesh.add(wireframeMesh);
+
+    var pointGeo = new THREE.BufferGeometry().setFromPoints(points.map(function (p) {
+      return p.clone().sub(geometry.boundingBox.getCenter(new THREE.Vector3()));
+    }));
+    var pointMat = new THREE.PointsMaterial({ color: 0x0f766e, size: 0.09, transparent: true, opacity: 0.95 });
+    pointMesh = new THREE.Points(pointGeo, pointMat);
+    solidMesh.add(pointMesh);
+
+    solidMesh.scale.set(1.35, 1.35, 1.35);
+    scene.add(solidMesh);
+  }
+
+  function onResize() {
+    if (!container) return;
+    var width = container.clientWidth;
+    var height = container.clientHeight;
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+    renderer.setSize(width, height);
+  }
+
+  function animate() {
+    requestAnimationFrame(animate);
+    if (controls) controls.update();
+    if (renderer && scene && camera) renderer.render(scene, camera);
+  }
+
+  function setupToggle() {
+    var btn = document.getElementById('phToggleRotate');
+    var pauseIcon = document.getElementById('phPauseIcon');
+    var playIcon = document.getElementById('phPlayIcon');
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+      autoRotate = !autoRotate;
+      if (controls) controls.autoRotate = autoRotate;
+      pauseIcon.style.display = autoRotate ? '' : 'none';
+      playIcon.style.display = autoRotate ? 'none' : '';
+      btn.setAttribute('aria-label', autoRotate ? 'Pausar rotación' : 'Reanudar rotación');
+      btn.setAttribute('title', autoRotate ? 'Pausar rotación' : 'Reanudar rotación');
+    });
+  }
+
+  window.addEventListener('DOMContentLoaded', function () {
+    init();
+    setupToggle();
+  });
+})();
+</script>
 
 </body>
 </html>
