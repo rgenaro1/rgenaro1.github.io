@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Foto → Celdas</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #101216; color: #EDEFF3; font-family: system-ui, -apple-system, sans-serif; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 32px 20px; }
+  header { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
+  h1 { font-family: ui-monospace, "JetBrains Mono", monospace; letter-spacing: -0.02em; font-size: 24px; margin: 0; }
+  .sub { color: #8B92A0; font-size: 13px; margin: 2px 0 0; }
+  .cols { display: grid; grid-template-columns: 1fr; gap: 22px; }
+  @media (min-width: 800px) { .cols { grid-template-columns: 1fr 1fr; } }
+  .panel { background: #181B21; border: 1px solid #2A2E37; border-radius: 10px; padding: 20px; display: flex; flex-direction: column; gap: 18px; }
+  .drop { border: 1.5px dashed #2A2E37; border-radius: 8px; padding: 40px 10px; display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; transition: 0.15s; }
+  .drop.over { border-color: #35C4C1; background: rgba(53,196,193,0.06); }
+  .drop p { margin: 0; font-size: 14px; font-weight: 600; }
+  .drop span { color: #8B92A0; font-size: 12px; }
+  input[type=file] { display: none; }
+  .error { color: #E8447D; font-size: 12px; margin: 0; }
+  .row-label { display: flex; justify-content: space-between; font-size: 12px; color: #8B92A0; margin-bottom: 6px; }
+  .row-label b { color: #35C4C1; font-family: monospace; font-weight: 600; }
+  input[type=range] { width: 100%; }
+  .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip { border: 1px solid #2A2E37; background: transparent; color: #EDEFF3; border-radius: 6px; padding: 7px 11px; font-size: 12px; font-weight: 500; cursor: pointer; transition: 0.15s; }
+  .chip.active-a { background: #35C4C1; color: #101216; border-color: #35C4C1; }
+  .chip.active-b { background: #E8447D; color: #101216; border-color: #E8447D; }
+  .stats { color: #8B92A0; font-size: 12px; font-family: monospace; display: flex; align-items: center; gap: 6px; }
+  .stats .warn { color: #F0C419; }
+  .download-btn { border: none; border-radius: 8px; padding: 13px; font-weight: 600; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; background: #35C4C1; color: #101216; }
+  .download-btn:disabled { background: #2A2E37; color: #8B92A0; cursor: not-allowed; }
+  .preview-panel { min-height: 360px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .preview-frame { position: relative; }
+  .preview-frame canvas { image-rendering: pixelated; max-width: 100%; display: block; border-radius: 3px; }
+  .tick { position: absolute; width: 10px; height: 10px; }
+  .empty { color: #8B92A0; font-size: 14px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .again { margin-top: 14px; color: #8B92A0; font-size: 12px; background: none; border: none; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+  footer p { color: #8B92A0; font-size: 12px; text-align: center; margin-top: 26px; }
+  .spin { animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel" data-presets="react">
+const { useState, useRef, useEffect, useCallback } = React;
+
+/* ---------- CRC32 + escritor ZIP (sin dependencias) ---------- */
+function makeCRCTable() {
+  const table = [];
+  for (let n = 0; n < 256; n++) {
+    let c = n;
+    for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+    table[n] = c >>> 0;
+  }
+  return table;
+}
+const CRC_TABLE = makeCRCTable();
+function crc32(bytes) {
+  let crc = 0xffffffff;
+  for (let i = 0; i < bytes.length; i++) crc = CRC_TABLE[(crc ^ bytes[i]) & 0xff] ^ (crc >>> 8);
+  return (crc ^ 0xffffffff) >>> 0;
+}
+function createZip(files) {
+  const encoder = new TextEncoder();
+  const localParts = [], centralParts = [];
+  let offset = 0;
+  const now = new Date();
+  const dosTime = ((now.getHours() & 0x1f) << 11) | ((now.getMinutes() & 0x3f) << 5) | (Math.floor(now.getSeconds() / 2) & 0x1f);
+  const dosDate = (((now.getFullYear() - 1980) & 0x7f) << 9) | (((now.getMonth() + 1) & 0xf) << 5) | (now.getDate() & 0x1f);
+
+  for (const file of files) {
+    const nameBytes = encoder.encode(file.name);
+    const data = file.data;
+    const crc = crc32(data);
+    const size = data.length;
+
+    const lh = new DataView(new ArrayBuffer(30));
+    lh.setUint32(0, 0x04034b50, true); lh.setUint16(4, 20, true); lh.setUint16(6, 0, true);
+    lh.setUint16(8, 0, true); lh.setUint16(10, dosTime, true); lh.setUint16(12, dosDate, true);
+    lh.setUint32(14, crc, true); lh.setUint32(18, size, true); lh.setUint32(22, size, true);
+    lh.setUint16(26, nameBytes.length, true); lh.setUint16(28, 0, true);
+    localParts.push(new Uint8Array(lh.buffer), nameBytes, data);
+
+    const ch = new DataView(new ArrayBuffer(46));
+    ch.setUint32(0, 0x02014b50, true); ch.setUint16(4, 20, true); ch.setUint16(6, 20, true);
+    ch.setUint16(8, 0, true); ch.setUint16(10, 0, true); ch.setUint16(12, dosTime, true); ch.setUint16(14, dosDate, true);
+    ch.setUint32(16, crc, true); ch.setUint32(20, size, true); ch.setUint32(24, size, true);
+    ch.setUint16(28, nameBytes.length, true); ch.setUint16(30, 0, true); ch.setUint16(32, 0, true);
+    ch.setUint16(34, 0, true); ch.setUint16(36, 0, true); ch.setUint32(38, 0, true); ch.setUint32(42, offset, true);
+    centralParts.push(new Uint8Array(ch.buffer), nameBytes);
+
+    offset += lh.byteLength + nameBytes.length + size;
+  }
+
+  const centralSize = centralParts.reduce((a, p) => a + p.length, 0);
+  const centralOffset = offset;
+  const end = new DataView(new ArrayBuffer(22));
+  end.setUint32(0, 0x06054b50, true); end.setUint16(4, 0, true); end.setUint16(6, 0, true);
+  end.setUint16(8, files.length, true); end.setUint16(10, files.length, true);
+  end.setUint32(12, centralSize, true); end.setUint32(16, centralOffset, true); end.setUint16(20, 0, true);
+
+  const allParts = [...localParts, ...centralParts, new Uint8Array(end.buffer)];
+  const total = allParts.reduce((a, p) => a + p.length, 0);
+  const result = new Uint8Array(total);
+  let pos = 0;
+  for (const part of allParts) { result.set(part, pos); pos += part.length; }
+  return result;
+}
+
+/* ---------- Utilidades XLSX ---------- */
+function colLetter(n) {
+  let s = "";
+  while (n > 0) { const m = (n - 1) % 26; s = String.fromCharCode(65 + m) + s; n = Math.floor((n - 1) / 26); }
+  return s;
+}
+function toHex2(v) { return Math.max(0, Math.min(255, v)).toString(16).padStart(2, "0").toUpperCase(); }
+
+function buildWorkbookBytes({ cols, rows, data, cellPx }) {
+  const enc = new TextEncoder();
+  const colWidthChars = Math.max(1, (cellPx - 5) / 7);
+  const rowHeightPt = cellPx * 0.75;
+
+  const colorToIndex = new Map();
+  const cellStyleIdx = new Array(cols * rows);
+
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const i = (r * cols + c) * 4;
+      const hex = toHex2(data[i]) + toHex2(data[i + 1]) + toHex2(data[i + 2]);
+      let idx = colorToIndex.get(hex);
+      if (idx === undefined) { idx = colorToIndex.size; colorToIndex.set(hex, idx); }
+      cellStyleIdx[r * cols + c] = idx + 1;
+    }
+  }
+
+  let fillsXml = '<fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill>';
+  let cellXfsXml = '<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>';
+  for (const hex of colorToIndex.keys()) {
+    fillsXml += `<fill><patternFill patternType="solid"><fgColor rgb="FF${hex}"/><bgColor indexed="64"/></patternFill></fill>`;
+    cellXfsXml += `<xf numFmtId="0" fontId="0" fillId="${2 + colorToIndex.get(hex)}" borderId="0" xfId="0" applyFill="1"/>`;
+  }
+
+  const stylesXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+    '<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' +
+    '<fonts count="1"><font><sz val="11"/><name val="Calibri"/></font></fonts>' +
+    `<fills count="${2 + colorToIndex.size}">${fillsXml}</fills>` +
+    '<borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders>' +
+    '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>' +
+    `<cellXfs count="${1 + colorToIndex.size}">${cellXfsXml}</cellXfs>` +
+    '<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>';
+
+  let colsXml = "<cols>";
+  for (let c = 1; c <= cols; c++) colsXml += `<col min="${c}" max="${c}" width="${colWidthChars}" customWidth="1"/>`;
+  colsXml += "</cols>";
+
+  let rowsXml = "";
+  for (let r = 1; r <= rows; r++) {
+    let rowCells = "";
+    for (let c = 1; c <= cols; c++) {
+      const s = cellStyleIdx[(r - 1) * cols + (c - 1)];
+      rowCells += `<c r="${colLetter(c)}${r}" s="${s}"/>`;
+    }
+    rowsXml += `<row r="${r}" ht="${rowHeightPt}" customHeight="1">${rowCells}</row>`;
+  }
+
+  const sheetXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+    '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' +
+    `<dimension ref="A1:${colLetter(cols)}${rows}"/>` +
+    '<sheetFormatPr defaultRowHeight="15"/>' + colsXml + `<sheetData>${rowsXml}</sheetData></worksheet>`;
+
+  const workbookXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+    '<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">' +
+    '<sheets><sheet name="Mosaico" sheetId="1" r:id="rId1"/></sheets></workbook>';
+
+  const workbookRelsXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+    '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+    '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>' +
+    '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>';
+
+  const rootRelsXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+    '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+    '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>' +
+    '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/>' +
+    '<Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/></Relationships>';
+
+  const contentTypesXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+    '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">' +
+    '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>' +
+    '<Default Extension="xml" ContentType="application/xml"/>' +
+    '<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>' +
+    '<Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>' +
+    '<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>' +
+    '<Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>' +
+    '<Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/></Types>';
+
+  const coreXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+    '<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/">' +
+    '<dc:title>Mosaico</dc:title><dc:creator>Foto a Excel</dc:creator></cp:coreProperties>';
+
+  const appXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+    '<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties">' +
+    '<Application>Foto a Excel</Application></Properties>';
+
+  const files = [
+    { name: "[Content_Types].xml", data: enc.encode(contentTypesXml) },
+    { name: "_rels/.rels", data: enc.encode(rootRelsXml) },
+    { name: "docProps/core.xml", data: enc.encode(coreXml) },
+    { name: "docProps/app.xml", data: enc.encode(appXml) },
+    { name: "xl/workbook.xml", data: enc.encode(workbookXml) },
+    { name: "xl/_rels/workbook.xml.rels", data: enc.encode(workbookRelsXml) },
+    { name: "xl/styles.xml", data: enc.encode(stylesXml) },
+    { name: "xl/worksheets/sheet1.xml", data: enc.encode(sheetXml) },
+  ];
+  return createZip(files);
+}
+
+/* ---------- Iconos simples en SVG (sin dependencias) ---------- */
+const IconUpload = () => (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#35C4C1" strokeWidth="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>);
+const IconDownload = () => (<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>);
+const IconGrid = () => (<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>);
+const IconLoader = () => (<svg className="spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 12a9 9 0 11-6.219-8.56"/></svg>);
+const IconImageOff = () => (<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#8B92A0" strokeWidth="2"><line x1="2" y1="2" x2="22" y2="22"/><path d="M10.41 10.41a2 2 0 11-2.83-2.83"/><path d="M13.5 13.5L21 21"/><path d="M21 15V5a2 2 0 00-2-2H9"/><path d="M3 15V5a2 2 0 012-2h4"/><path d="M3 15l4-4 4 4" opacity="0.5"/></svg>);
+const IconRefresh = () => (<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>);
+
+/* ---------- Componente principal ---------- */
+const CELL_SIZE_OPTIONS = [{ label: "Pequeña", px: 10 }, { label: "Media", px: 16 }, { label: "Grande", px: 24 }];
+const LEVEL_OPTIONS = [{ label: "Completo", value: 0 }, { label: "24 tonos", value: 24 }, { label: "16 tonos", value: 16 }, { label: "8 tonos", value: 8 }, { label: "4 tonos", value: 4 }];
+
+function App() {
+  const [imgEl, setImgEl] = useState(null);
+  const [fileName, setFileName] = useState("");
+  const [gridCols, setGridCols] = useState(48);
+  const [cellSizeIdx, setCellSizeIdx] = useState(1);
+  const [levelIdx, setLevelIdx] = useState(0);
+  const [dragOver, setDragOver] = useState(false);
+  const [grid, setGrid] = useState(null);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+
+  const previewRef = useRef(null);
+  const fileInputRef = useRef(null);
+
+  const handleFile = useCallback((file) => {
+    if (!file || !file.type.startsWith("image/")) { setError("Ese archivo no es una imagen. Prueba con JPG, PNG o WEBP."); return; }
+    setError("");
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => { setImgEl(img); setFileName(file.name.replace(/\.[^.]+$/, "")); };
+    img.onerror = () => setError("No se pudo leer esa imagen.");
+    img.src = url;
+  }, []);
+
+  const recompute = useCallback(() => {
+    if (!imgEl) return;
+    const rows = Math.max(1, Math.round((gridCols * imgEl.naturalHeight) / imgEl.naturalWidth));
+    const small = document.createElement("canvas");
+    small.width = gridCols; small.height = rows;
+    const sctx = small.getContext("2d");
+    sctx.imageSmoothingEnabled = true; sctx.imageSmoothingQuality = "high";
+    sctx.drawImage(imgEl, 0, 0, gridCols, rows);
+    const imageData = sctx.getImageData(0, 0, gridCols, rows);
+    const data = imageData.data;
+
+    const levels = LEVEL_OPTIONS[levelIdx].value;
+    if (levels > 1) {
+      const step = 255 / (levels - 1);
+      for (let i = 0; i < data.length; i += 4) {
+        data[i] = Math.round(Math.round(data[i] / step) * step);
+        data[i + 1] = Math.round(Math.round(data[i + 1] / step) * step);
+        data[i + 2] = Math.round(Math.round(data[i + 2] / step) * step);
+      }
+    }
+
+    setGrid({ cols: gridCols, rows, data });
+
+    const canvas = previewRef.current;
+    if (canvas) {
+      const dispCell = Math.max(2, Math.floor(440 / gridCols));
+      canvas.width = gridCols * dispCell; canvas.height = rows * dispCell;
+      const ctx = canvas.getContext("2d");
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(small, 0, 0, canvas.width, canvas.height);
+      if (dispCell >= 5) {
+        ctx.strokeStyle = "rgba(16,18,22,0.25)"; ctx.lineWidth = 1;
+        for (let c = 1; c < gridCols; c++) { ctx.beginPath(); ctx.moveTo(c * dispCell + 0.5, 0); ctx.lineTo(c * dispCell + 0.5, canvas.height); ctx.stroke(); }
+        for (let r = 1; r < rows; r++) { ctx.beginPath(); ctx.moveTo(0, r * dispCell + 0.5); ctx.lineTo(canvas.width, r * dispCell + 0.5); ctx.stroke(); }
+      }
+    }
+  }, [imgEl, gridCols, levelIdx]);
+
+  useEffect(() => { recompute(); }, [recompute]);
+
+  const handleDownload = () => {
+    if (!grid) return;
+    setBusy(true); setError("");
+    setTimeout(() => {
+      try {
+        const cellPx = CELL_SIZE_OPTIONS[cellSizeIdx].px;
+        const bytes = buildWorkbookBytes({ cols: grid.cols, rows: grid.rows, data: grid.data, cellPx });
+        const blob = new Blob([bytes], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url; a.download = `${fileName || "mosaico"}-mosaico.xlsx`;
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 4000);
+      } catch (e) {
+        setError("No se pudo generar el archivo. Prueba con una cuadrícula más pequeña.");
+      } finally { setBusy(false); }
+    }, 30);
+  };
+
+  const totalCells = grid ? grid.cols * grid.rows : 0;
+
+  return (
+    <div className="wrap">
+      <header>
+        <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
+          <circle cx="17" cy="17" r="10" stroke="#35C4C1" strokeWidth="1.4" />
+          <circle cx="17" cy="17" r="4" stroke="#E8447D" strokeWidth="1.4" />
+          <line x1="17" y1="0" x2="17" y2="34" stroke="#F0C419" strokeWidth="1" />
+          <line x1="0" y1="17" x2="34" y2="17" stroke="#F0C419" strokeWidth="1" />
+        </svg>
+        <div>
+          <h1>FOTO → CELDAS</h1>
+          <p className="sub">Convierte una foto en una cuadrícula de Excel coloreada, píxel a celda.</p>
+        </div>
+      </header>
+
+      <div className="cols">
+        <div className="panel">
+          <div
+            className={"drop" + (dragOver ? " over" : "")}
+            onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+            onDragLeave={() => setDragOver(false)}
+            onDrop={(e) => { e.preventDefault(); setDragOver(false); handleFile(e.dataTransfer.files && e.dataTransfer.files[0]); }}
+            onClick={() => fileInputRef.current && fileInputRef.current.click()}
+          >
+            <IconUpload />
+            <p>Sube o arrastra una foto</p>
+            <span>JPG, PNG o WEBP</span>
+            <input ref={fileInputRef} type="file" accept="image/*" onChange={(e) => handleFile(e.target.files && e.target.files[0])} />
+          </div>
+
+          {error && <p className="error">{error}</p>}
+
+          <div>
+            <div className="row-label"><span>Columnas de la cuadrícula</span><b>{gridCols}</b></div>
+            <input type="range" min="10" max="100" value={gridCols} onChange={(e) => setGridCols(Number(e.target.value))} />
+          </div>
+
+          <div>
+            <div className="row-label"><span>Tamaño de celda en Excel</span></div>
+            <div className="btn-group">
+              {CELL_SIZE_OPTIONS.map((opt, i) => (
+                <button key={opt.label} className={"chip" + (cellSizeIdx === i ? " active-a" : "")} onClick={() => setCellSizeIdx(i)}>{opt.label}</button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <div className="row-label"><span>Colores (reducir simplifica el mosaico)</span></div>
+            <div className="btn-group">
+              {LEVEL_OPTIONS.map((opt, i) => (
+                <button key={opt.label} className={"chip" + (levelIdx === i ? " active-b" : "")} onClick={() => setLevelIdx(i)}>{opt.label}</button>
+              ))}
+            </div>
+          </div>
+
+          {grid && (
+            <div className="stats">
+              <IconGrid /> {grid.cols} × {grid.rows} celdas ({totalCells.toLocaleString("es")} en total)
+              {totalCells > 6000 && <span className="warn">· puede tardar un poco más</span>}
+            </div>
+          )}
+
+          <button className="download-btn" disabled={!grid || busy} onClick={handleDownload}>
+            {busy ? (<><IconLoader /> Generando…</>) : (<><IconDownload /> Descargar como .xlsx</>)}
+          </button>
+        </div>
+
+        <div className="panel preview-panel">
+          {imgEl ? (
+            <div className="preview-frame">
+              <div className="tick" style={{ top: -5, left: -5, borderTop: "2px solid #35C4C1", borderLeft: "2px solid #35C4C1" }}></div>
+              <div className="tick" style={{ top: -5, right: -5, borderTop: "2px solid #35C4C1", borderRight: "2px solid #35C4C1" }}></div>
+              <div className="tick" style={{ bottom: -5, left: -5, borderBottom: "2px solid #E8447D", borderLeft: "2px solid #E8447D" }}></div>
+              <div className="tick" style={{ bottom: -5, right: -5, borderBottom: "2px solid #E8447D", borderRight: "2px solid #E8447D" }}></div>
+              <canvas ref={previewRef}></canvas>
+            </div>
+          ) : (
+            <div className="empty"><IconImageOff />Sube una imagen para ver el mosaico</div>
+          )}
+          {imgEl && (
+            <button className="again" onClick={() => { setImgEl(null); setGrid(null); }}><IconRefresh /> Elegir otra foto</button>
+          )}
+        </div>
+      </div>
+
+      <footer>
+        <p>Cada celda del Excel se rellena con el color exacto de un píxel de la imagen reducida — abre el archivo y verás la foto reconstruida en la cuadrícula.</p>
+      </footer>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>
