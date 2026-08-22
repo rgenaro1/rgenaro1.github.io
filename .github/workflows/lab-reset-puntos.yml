@@ -1,9 +1,10 @@
-name: Lab — reiniciar puntos en móvil
+name: Lab reset puntos movil
 on:
   workflow_dispatch:
   push:
     paths:
-      - ".github/workflows/lab-reset-puntos.yml"
+      - scripts/lab_reset_puntos.py
+      - .github/workflows/lab-reset-puntos.yml
 permissions:
   contents: write
 jobs:
@@ -11,62 +12,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Parchear solo dantix-vision-lab
-        run: |
-          python3 << 'PY'
-          from pathlib import Path
-          p = Path("dantix-vision-lab/index.html")
-          t = p.read_text(encoding="utf-8")
-          old_row = """    <div class=\"btn-row solo-escritorio\">
-      <button class=\"ghost\" id=\"btnResetCorners\">Reiniciar puntos</button>
-      <button class=\"ghost\" id=\"btnDetectarAruco\">🎯 Detectar esquinas con ArUco</button>
-    </div>"""
-          new_row = """    <div class=\"btn-row\" id=\"rowCalibAcciones\">
-      <button class=\"ghost\" type=\"button\" id=\"btnUndoCorner\">Quitar último</button>
-      <button class=\"ghost\" type=\"button\" id=\"btnResetCorners\">Reiniciar puntos</button>
-      <button class=\"ghost solo-escritorio\" type=\"button\" id=\"btnDetectarAruco\">🎯 Detectar esquinas con ArUco</button>
-    </div>"""
-          if old_row not in t:
-              raise SystemExit("no encontré la fila de botones de calibración")
-          t = t.replace(old_row, new_row, 1)
-          old_js = """document.getElementById('btnResetCorners').addEventListener('click', () => {
-  corners = [];
-  draggingIndex = -1;
-  hideLoupe();
-  redrawOriginalWithCorners();
-  updateCornerCount();
-});"""
-          new_js = """document.getElementById('btnResetCorners').addEventListener('click', () => {
-  corners = [];
-  draggingIndex = -1;
-  hideLoupe();
-  redrawOriginalWithCorners();
-  updateCornerCount();
-});
-document.getElementById('btnUndoCorner').addEventListener('click', () => {
-  if(!corners.length) return;
-  corners.pop();
-  draggingIndex = -1;
-  hideLoupe();
-  redrawOriginalWithCorners();
-  updateCornerCount();
-});"""
-          if old_js not in t:
-              raise SystemExit("no encontré el listener de reiniciar puntos")
-          t = t.replace(old_js, new_js, 1)
-          t = t.replace("<title>Dantix Leather Vision v206</title>", "<title>Dantix Leather Vision v206-lab</title>", 1)
-          old_hint = "También puedes arrastrar un punto ya puesto para ajustarlo."
-          new_hint = "También puedes arrastrar un punto ya puesto para ajustarlo. Si te equivocás: Quitar último o Reiniciar puntos."
-          if old_hint in t:
-              t = t.replace(old_hint, new_hint, 1)
-          p.write_text(t, encoding="utf-8")
-          print("ok", p.stat().st_size)
-          PY
-      - name: Commit
-        run: |
+      - run: python3 scripts/lab_reset_puntos.py
+      - run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add dantix-vision-lab/index.html
-          git diff --cached --quiet && echo "sin cambios" && exit 0
-          git commit -m "Lab: Reiniciar puntos y Quitar último visibles en móvil"
+          git diff --cached --quiet && echo sin-cambios && exit 0
+          git commit -m "Lab: Reiniciar puntos visible en movil"
           git push
