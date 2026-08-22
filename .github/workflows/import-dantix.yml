@@ -1,0 +1,34 @@
+name: Import Dantix HTML
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/import-dantix.yml"
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download and write index.html
+        run: |
+          set -euo pipefail
+          mkdir -p dantix-vision
+          curl -fL --retry 4 -o /tmp/dantix.html.gz "https://d.uguu.se/dSjlWMAo.gz"
+          python3 - <<'PY'
+          import gzip, pathlib
+          data = gzip.open('/tmp/dantix.html.gz').read()
+          if not data.startswith(b'<!DOCTYPE html>'):
+              raise SystemExit('archivo descargado no es el HTML de Dantix')
+          pathlib.Path('dantix-vision/index.html').write_bytes(data)
+          print('wrote', len(data), 'bytes')
+          PY
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add dantix-vision/index.html
+          git diff --cached --quiet && echo 'sin cambios' && exit 0
+          git commit -m "Dantix Vision: HTML completo de la app"
+          git push
