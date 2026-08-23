@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Dantix Leather Vision v206-lab</title>
+<title>Dantix Leather Vision LAB v220</title>
 <meta name="description" content="Medición y digitalización de mantas y moldes. 100% en el dispositivo.">
 <meta name="theme-color" content="#0d9d94">
 <meta name="mobile-web-app-capable" content="yes">
@@ -323,6 +323,79 @@
 
   .dlv-solutions{padding:36px 0 8px;}
   .mode-options{display:flex; gap:20px; flex-wrap:wrap; justify-content:center;}
+  .home-group{width:100%; margin-top:8px;}
+  #labBanner{background:#1a3a36;color:#d6fff8;text-align:center;padding:8px 12px;font-size:13px;font-weight:700;letter-spacing:.04em;}
+  #studioStages .studio-stage-btn.is-on{background:var(--brand);color:#fff;border-color:var(--brand);}
+  body.modo-escritorio.studio-medir #step5,
+  body.modo-escritorio.studio-medir #step6,
+  body.modo-escritorio.studio-medir #step7,
+  body.modo-escritorio.studio-medir #step8{display:none !important;}
+  body.modo-escritorio.studio-inspeccionar #step1,
+  body.modo-escritorio.studio-inspeccionar #step2,
+  body.modo-escritorio.studio-inspeccionar #step3,
+  body.modo-escritorio.studio-inspeccionar #step4,
+  body.modo-escritorio.studio-inspeccionar #step7,
+  body.modo-escritorio.studio-inspeccionar #step8{display:none !important;}
+  body.modo-escritorio.studio-rendimiento #step1,
+  body.modo-escritorio.studio-rendimiento #step2,
+  body.modo-escritorio.studio-rendimiento #step3,
+  body.modo-escritorio.studio-rendimiento #step4,
+  body.modo-escritorio.studio-rendimiento #step5,
+  body.modo-escritorio.studio-rendimiento #step6{display:none !important;}
+  #swUpdateBar{display:none;position:sticky;top:0;z-index:80;background:#0d9d94;color:#fff;text-align:center;padding:10px 12px;font-weight:700;}
+  #swUpdateBar button{margin-left:10px;background:#fff;color:#0d9d94;border:0;border-radius:999px;padding:6px 12px;font-weight:700;cursor:pointer;}
+
+  .home-group-label{
+    font-size:11.5px; letter-spacing:0.14em; text-transform:uppercase; font-weight:700;
+    color:var(--brand); margin:18px 0 12px;
+  }
+  .home-group-moldes .home-group-label{color:#c2782a;}
+  .home-mantas,.home-moldes{width:100%;}
+  .home-mantas .mode-btn,.mode-btn.home-molde{
+    display:grid;
+    grid-template-columns:58px 1fr auto;
+    grid-template-areas:
+      "icon title title"
+      "icon sub sub"
+      "icon desc desc"
+      "chips chips cta";
+    column-gap:14px; row-gap:2px;
+    max-width:none; width:100%; flex:none;
+    text-align:left; padding:22px 20px;
+    border-left:4px solid var(--brand);
+  }
+  .mode-btn.home-molde{border-left-color:#c2782a; flex:1 1 100%;}
+  .home-mantas .mode-btn .mode-btn-icon,
+  .mode-btn.home-molde .mode-btn-icon{
+    grid-area:icon; width:52px; height:52px; margin:0;
+    background:transparent; align-self:start;
+  }
+  .home-mantas .mode-btn .mode-btn-icon svg,
+  .mode-btn.home-molde .mode-btn-icon svg{width:40px; height:40px;}
+  .mode-btn.home-molde .mode-btn-icon{color:#c2782a; background:transparent;}
+  .home-mantas .mode-btn .mode-btn-title,
+  .mode-btn.home-molde .mode-btn-title{grid-area:title; margin:0 0 2px;}
+  .mode-btn-sub{grid-area:sub; font-size:12.5px; font-weight:600; color:var(--brand); margin:0;}
+  .mode-btn.home-molde .mode-btn-sub{color:#c2782a;}
+  .home-mantas .mode-btn .mode-btn-desc,
+  .mode-btn.home-molde .mode-btn-desc{grid-area:desc; margin:8px 0 4px;}
+  .mode-btn-chips{grid-area:chips; display:flex; flex-wrap:wrap; gap:8px; margin:10px 0 0; align-items:center;}
+  .mode-chip{
+    font-size:11px; border:1px solid var(--line); border-radius:999px;
+    padding:4px 10px; color:var(--text-dim); background:var(--surface);
+  }
+  .mode-btn.home-molde .mode-chip{border-color:#e8d0b0; color:#8a5a20;}
+  .home-mantas .mode-btn .mode-btn-cta,
+  .mode-btn.home-molde .mode-btn-cta{
+    grid-area:cta; justify-self:end; align-self:end;
+    background:var(--brand); color:#fff; border-radius:999px;
+    padding:8px 14px; margin:10px 0 0; font-size:12.5px;
+  }
+  .mode-btn.home-molde .mode-btn-cta{background:#c2782a; color:#fff;}
+  @media (min-width:960px){
+    .home-mantas{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px;}
+    .home-moldes{display:block;}
+  }
   .mode-btn{
     flex:1 1 260px; max-width:320px; border:1px solid var(--line); border-radius:var(--radius-lg);
     padding:28px 24px; background:var(--surface); cursor:pointer; text-align:left; color:var(--text); font-family:inherit;
@@ -688,6 +761,7 @@
   }
 </style></head>
 <body class="modo-pendiente">
+<div id="labBanner">VERSION DE PRUEBA · no modifica produccion</div>
 
 <!-- SELECTOR DE MODO — se muestra antes que cualquier otra cosa -->
 <div id="modeSelect">
@@ -713,8 +787,8 @@
   <main class="dlv-main">
     <section class="dlv-hero" id="dlv-inicio">
       <div class="dlv-hero-copy">
-        <h1>Entrá a trabajar.<span class="accent">Medí o digitalizá ahora.</span></h1>
-        <p class="mode-sub">Taller primero: elegí la herramienta y seguí. Marketing abajo, si lo necesitás.</p>
+        <h1>Empieza a trabajar.<span class="accent">Mide o digitaliza ahora.</span></h1>
+        <p class="mode-sub">Elige la herramienta y comienza. Más abajo está el detalle del proceso.</p>
         <div class="dlv-hero-cta">
           <a href="#dlv-soluciones" class="dlv-btn-primary">Entrar a trabajar →</a>
           <button type="button" class="dlv-btn-secondary" id="btnContinuarUltimo">Continuar última herramienta</button>
@@ -723,8 +797,8 @@
           <span class="cv-chip" id="homeCvStatus">Motor de visión: cargando…</span>
         </div>
         <aside class="pwa-card" id="pwaInstallCard">
-          <b>Instalá Dantix en el teléfono</b>
-          <p id="pwaInstallHint">Queda como app, con icono en la pantalla de inicio. Sigue 100% local.</p>
+          <b>Instala Dantix en el teléfono</b>
+          <p id="pwaInstallHint">Queda como una app, con icono en la pantalla de inicio. Todo se procesa en el teléfono.</p>
           <div class="btn-row">
             <button type="button" id="btnInstalarPwa">Instalar app</button>
             <button type="button" class="ghost" id="btnPwaLuego">Ahora no</button>
@@ -750,45 +824,58 @@
 
     <section class="dlv-solutions" id="dlv-soluciones">
       <div class="dlv-section-head">
-        <h2>Elige cómo quieres trabajar hoy</h2>
-        <p>Herramientas diseñadas para cada etapa de tu proceso.</p>
+        <h2>Elige qué vas a hacer</h2>
+        <p>Manta o molde. Cada opción hace una cosa distinta.</p>
       </div>
-      <div class="mode-options">
-        <button type="button" class="mode-btn" id="btnModoMovil">
-          <div class="mode-btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg></div>
-          <div class="mode-btn-title">VisionMeasure Mobile</div>
-          <div class="mode-btn-desc">Captura y mide mantas al instante. Obtén el área real y crea el registro digital en segundos.</div>
-          <div class="mode-btn-cta">Comenzar →</div>
-          <div class="mode-btn-tag">Rápido · Simple · En planta</div>
-        </button>
-        <button type="button" class="mode-btn" id="btnModoEscritorio">
-          <div class="mode-btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
-          <div class="mode-btn-title">VisionStudio</div>
-          <div class="mode-btn-desc">Inspección técnica completa: defectos, zonas, moldes, rendimiento y nesting real.</div>
-          <div class="mode-btn-cta">Comenzar →</div>
-          <div class="mode-btn-tag">Completo · Analítico · Profesional</div>
-        </button>
-        <button type="button" class="mode-btn" id="btnModoInteligente">
-          <div class="mode-btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2a3.5 3.5 0 0 0-3.5 3.5V6a3 3 0 0 0-1.5 5.6 3 3 0 0 0 .9 5A3.5 3.5 0 0 0 9 20.5V21"/><path d="M14.5 2A3.5 3.5 0 0 1 18 5.5V6a3 3 0 0 1 1.5 5.6 3 3 0 0 1-.9 5A3.5 3.5 0 0 1 15 20.5V21"/><path d="M9.5 5a2 2 0 0 1 2-2M9.5 21a2 2 0 0 0 2-2M14.5 5a2 2 0 0 0-2-2M14.5 21a2 2 0 0 1-2-2"/><path d="M8 9h.01M8 14h.01M16 9h.01M16 14h.01M12 6v13"/></svg></div>
-          <div class="mode-btn-title">Intelligent Measure</div>
-          <div class="mode-btn-desc">Mide fácilmente con Intelligent Measure de Dantix: solo 4 marcadores ArUco, sin ingresar ancho ni largo.</div>
-          <div class="mode-btn-cta">Comenzar →</div>
-          <div class="mode-btn-tag tag-beta">Beta · Solo ArUco · Sin medidas manuales</div>
-        </button>
-        <button type="button" class="mode-btn" id="btnModoMoldes">
-          <div class="mode-btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17 10 4l10 3-3 13z"/><circle cx="4" cy="17" r="1.3" fill="currentColor" stroke="none"/><circle cx="10" cy="4" r="1.3" fill="currentColor" stroke="none"/><circle cx="20" cy="7" r="1.3" fill="currentColor" stroke="none"/><circle cx="17" cy="20" r="1.3" fill="currentColor" stroke="none"/></svg></div>
-          <div class="mode-btn-title">Pattern</div>
-          <div class="mode-btn-desc">Digitaliza tus moldes y descarga en un archivo estándar DXF compatible con tu software CAD.</div>
-          <div class="mode-btn-cta">Comenzar →</div>
-          <div class="mode-btn-tag">Piezas de molde · Contorno real · DXF</div>
-        </button>
+      <div class="home-group">
+        <div class="home-group-label">Mantas</div>
+        <div class="mode-options home-mantas">
+          <button type="button" class="mode-btn" id="btnModoMovil">
+            <div class="mode-btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.2" cy="9.6" r="1.3"/><path d="m3 17 5.5-5.5 3.2 3.2 2.3-2.3L21 17"/></svg></div>
+            <div class="mode-btn-title">Recepción rápida</div>
+            <div class="mode-btn-sub">VisionMeasure</div>
+            <div class="mode-btn-desc">Mide el área desde el celular o la PC y deja el registro.</div>
+            <div class="mode-btn-chips"><span class="mode-chip">Celular o PC</span><span class="mode-chip">Área</span></div>
+            <div class="mode-btn-cta">Empezar →</div>
+          </button>
+          <button type="button" class="mode-btn" id="btnModoEscritorio">
+            <div class="mode-btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="m8.2 11 1.2 1.2L13 8.8"/><path d="M15.2 10.6h3"/><path d="m8.2 15.2 1.2 1.2L13 13"/><path d="M15.2 14.8h2.2"/><circle cx="17.4" cy="18.1" r="2.9"/><path d="m16.2 18.1 1 1.1 1.9-2"/></svg></div>
+            <div class="mode-btn-title">Recepción e inspección</div>
+            <div class="mode-btn-sub">VisionStudio</div>
+            <div class="mode-btn-desc">En PC. Mide la manta, clasifica defectos y calcula el rendimiento.</div>
+            <div class="mode-btn-chips"><span class="mode-chip">Solo PC</span><span class="mode-chip">Medición</span><span class="mode-chip">Calidad</span></div>
+            <div class="mode-btn-cta">Empezar →</div>
+          </button>
+          <button type="button" class="mode-btn" id="btnModoInteligente">
+            <div class="mode-btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V6a2 2 0 0 1 2-2h3"/><path d="M15 4h3a2 2 0 0 1 2 2v3"/><path d="M20 15v3a2 2 0 0 1-2 2h-3"/><path d="M9 20H6a2 2 0 0 1-2-2v-3"/><rect x="8" y="8" width="8" height="8" rx="1"/></svg></div>
+            <div class="mode-btn-title">Medición con Dantix Card</div>
+            <div class="mode-btn-sub">Intelligent Measure</div>
+            <div class="mode-btn-desc">Mide el área en cualquier sitio, con las 4 tarjetas, sin cinta.</div>
+            <div class="mode-btn-chips"><span class="mode-chip">Dantix Card</span><span class="mode-chip">Sin cinta</span><span class="mode-chip">Beta</span></div>
+            <div class="mode-btn-cta">Empezar →</div>
+          </button>
+        </div>
+      </div>
+      <div class="home-group home-group-moldes">
+        <div class="home-group-label">Moldes</div>
+        <div class="mode-options home-moldes">
+          <button type="button" class="mode-btn home-molde" id="btnModoMoldes">
+            <div class="mode-btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c2.1 0 3.6 1.2 4.6 2.4 1.8 2.1 4.2 3.2 4.2 6.2 0 2-1.1 3.3-2.7 4.1-.6.3-1 .9-.9 1.5l.3 2.2c.2 1.1-1.1 2-3.5 2H9c-2.4 0-3.7-.9-3.5-2l.3-2.2c.1-.6-.3-1.2-.9-1.5C3.3 14.9 2.2 13.6 2.2 11.6c0-3 2.4-4.1 4.2-6.2C7.4 4.2 8.9 3 12 3z"/><path d="M8.2 10.6c1.6 2.3 3.9 3.8 7.6 4.3" stroke-dasharray="2 2"/><path d="M10 7.2h4"/></svg></div>
+            <div class="mode-btn-title">Digitalizar moldes</div>
+            <div class="mode-btn-sub">Pattern</div>
+            <div class="mode-btn-desc">Sin escáner. Contorno listo para corte o para tu software de diseño.</div>
+            <div class="mode-btn-chips"><span class="mode-chip">DXF</span><span class="mode-chip">Sin escáner</span></div>
+            <div class="mode-btn-cta">Empezar →</div>
+          </button>
+        </div>
       </div>
     </section>
 
-    <section class="dlv-steps" id="dlv-tecnologia">
+    
+<section class="dlv-steps" id="dlv-tecnologia">
       <div class="dlv-section-head">
-        <h2>Una cámara. Un clic. Control total.</h2>
-        <p>Cada paso del proceso, asistido por visión por computadora — de la foto al reporte trazable.</p>
+        <h2>De la foto al reporte, en cinco pasos.</h2>
+        <p>Tomas la foto en planta. El sistema corrige, mide, clasifica y deja el registro.</p>
       </div>
       <div class="dlv-steps-row">
         <div class="dlv-step">
@@ -827,8 +914,8 @@
 
     <section class="dlv-benefits" id="dlv-beneficios">
       <div class="dlv-section-head">
-        <h2>El control de recepción se paga solo.</h2>
-        <p>Cada manta se mide con exactitud, no con la palabra del proveedor.</p>
+        <h2>Mides lo que entra y pagas lo que corresponde.</h2>
+        <p>Cada manta se mide en planta, no con la cifra del proveedor.</p>
       </div>
       <div class="dlv-benefits-grid">
         <div class="dlv-benefit">
@@ -939,13 +1026,13 @@
         <h2>Digitalizar piezas del molde con cámara</h2>
       </div>
     </div>
-    <p class="hint">Fotografía cada pieza del molde por separado, con los 4 marcadores ArUco en las esquinas de un rectángulo de referencia (cartulina, cartón, mesa marcada) alrededor de la pieza. Al terminar, descarga todas las piezas digitalizadas en un solo DXF y súbelo donde ya importas tus moldes (paso 07) — ahí le pones el nombre real a cada una.</p>
+    <p class="hint">Fotografía cada pieza del molde por separado, con las 4 Dantix Card en las esquinas de un rectángulo de referencia (cartulina, cartón, mesa marcada) alrededor de la pieza. Al terminar, descarga todas las piezas digitalizadas en un solo DXF y súbelo donde ya importas tus moldes (paso 07) — ahí le pones el nombre real a cada una.</p>
 
-    <input type="file" id="moldeFileInput" accept="image/*">
+    <input type="file" id="moldeFileInput" accept="image/*" capture="environment">
     <section class="capture-guide" aria-label="Guía para fotografiar la pieza">
       <p class="capture-guide-title">✓ Misma base que VisionStudio: foto usable</p>
       <ol>
-        <li>Los 4 ArUco del rectángulo, completos y planos.</li>
+        <li>Las 4 Dantix Card del rectángulo, completas y planas.</li>
         <li>Foto desde arriba, luz pareja, sin sombra dura sobre el borde.</li>
         <li>Toda la pieza dentro del rectángulo, con margen de fondo alrededor.</li>
       </ol>
@@ -961,7 +1048,7 @@
     <div class="hint">Toca y arrastra para colocar cada esquina del rectángulo de referencia. <b id="moldeCornerCount">0 / 4</b> marcadas.</div>
     <div class="btn-row">
       <button class="ghost" id="btnMoldeResetCorners">Reiniciar puntos</button>
-      <button class="ghost" id="btnMoldeDetectarAruco">🎯 Detectar esquinas con ArUco</button>
+      <button class="ghost" id="btnMoldeDetectarAruco">🎯 Detectar esquinas con Dantix Card</button>
     </div>
     <div class="dims" style="margin-top:14px;">
       <label class="field">Ancho real del rectángulo (cm)<input type="number" id="moldeAnchoCm" value="30" min="1" step="0.1"></label>
@@ -1020,7 +1107,7 @@
       <div class="btn-row" style="margin-top:16px;">
         <button class="ghost" id="btnMoldeExtraerPuntos">✏️ Extraer puntos y ajustar →</button>
       </div>
-      <p class="hint" id="moldePuntosHint" style="display:none;">Arrastrá puntos · toque en una línea agrega vértice · doble clic quita o convierte a curva · manijas naranjas = Bézier. Snap y suavizado en la barra CAD.</p>
+      <p class="hint" id="moldePuntosHint" style="display:none;">Arrastra puntos · toque en una línea agrega vértice · doble clic quita o convierte a curva · manijas naranjas = Bézier. Snap y suavizado en la barra CAD.</p>
       <div class="cad-bar" id="moldeCadBar" style="display:none;">
         <span class="count" id="moldeCadCount">0 pts · 0 curvas</span>
         <label class="cad-zoom">Zoom <input type="range" id="moldeCadZoom" min="100" max="220" value="100"><span id="moldeCadZoomV">100%</span></label>
@@ -1036,6 +1123,7 @@
     </div>
 
     <div class="hint" id="moldeResultadoHint" style="display:none; margin-top:14px; color:var(--brand); font-weight:600;"></div>
+    <button type="button" id="btnOtraPiezaMolde" class="ghost" style="display:none;margin-top:10px;">Digitalizar otra pieza</button>
 
     <div style="margin-top:22px;">
       <h3 style="font-size:14px; font-weight:700; margin:0 0 10px;">Piezas digitalizadas en esta sesión</h3>
@@ -1051,7 +1139,7 @@
         </thead>
         <tbody id="tablaMoldesDigitalizados"></tbody>
       </table>
-      <p class="hint" id="moldeListaVaciaHint" style="margin-top:8px;">Todavía no digitalizaste ninguna pieza en esta sesión.</p>
+      <p class="hint" id="moldeListaVaciaHint" style="margin-top:8px;">Todavía no hay piezas digitalizadas en esta sesión.</p>
     </div>
 
     <div class="btn-row" style="margin-top:16px;">
@@ -1071,7 +1159,7 @@
         </div>
       </div>
     </div>
-    <p class="hint">La primera opción usa arcos (formato R12, la más compatible en general). La segunda conserva las curvas como Bézier/SPLINE reales, sin aproximar — probala si necesitás editar las curvas directamente en tu CAD, pero probá primero que tu programa la abra bien.</p>
+    <p class="hint">La primera opción usa arcos (formato R12, la más compatible en general). La segunda conserva las curvas como Bézier/SPLINE reales, sin aproximar — pruébala si necesitas editar las curvas directamente en tu CAD, pero prueba primero que tu programa la abra bien.</p>
   </div>
 
   <!-- NUEVA RECEPCIÓN: datos generales que aplican a todas las mantas del lote -->
@@ -1138,6 +1226,15 @@
     <div id="rcResumen" style="display:none;"></div>
   </div>
 
+  <div id="avisoStudioMovil" class="solo-escritorio" style="display:none;margin:12px 16px;padding:12px 14px;border:1px solid #e8d0b0;background:#fff8ef;border-radius:12px;">
+    VisionStudio está pensado para PC. En el celular usa Recepción rápida.
+    <div class="btn-row" style="margin-top:8px;"><button type="button" id="btnIrRapidaDesdeStudio">Ir a recepción rápida</button></div>
+  </div>
+  <div id="studioStages" class="solo-escritorio" style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 16px 16px;">
+    <button type="button" class="ghost studio-stage-btn is-on" data-stage="medir">1. Medir</button>
+    <button type="button" class="ghost studio-stage-btn" data-stage="inspeccionar">2. Inspeccionar</button>
+    <button type="button" class="ghost studio-stage-btn" data-stage="rendimiento">3. Rendimiento</button>
+  </div>
   <!-- STEP 1: UPLOAD -->
   <div class="step disabled" id="step1">
     <div class="step-head">
@@ -1148,12 +1245,12 @@
       </div>
       <span class="step-lock">siguiente</span>
     </div>
-    <p class="step-preview">Cuando inicies la recepción podrás cargar la foto acá. Los 4 ArUco tienen que verse enteros.</p>
-    <input type="file" id="fileInput" accept="image/*">
+    <p class="step-preview">Cuando inicies la recepción podrás cargar la foto acá. Las 4 Dantix Card tienen que verse enteras.</p>
+    <input type="file" id="fileInput" accept="image/*" capture="environment">
     <section class="capture-guide" aria-label="Guía para una foto confiable">
       <p class="capture-guide-title">✓ Antes de medir, prepara una foto confiable</p>
       <ol>
-        <li>Ubica los cuatro marcadores ArUco, completos y visibles.</li>
+        <li>Ubica las cuatro Dantix Card, completas y visibles.</li>
         <li>Fotografía desde arriba, con buena luz y sin sombras fuertes.</li>
         <li>Incluye toda la manta y confirma la detección antes de registrar.</li>
       </ol>
@@ -1183,18 +1280,18 @@
       <canvas id="canvasOriginal"></canvas>
     </div>
     <div class="hint">Toca y arrastra para colocar cada esquina — verás una lupa con zoom para ubicarla con precisión. También puedes arrastrar un punto ya puesto para ajustarlo. <b id="cornerCount">0 / 4</b> marcadas.</div>
-    <div class="hint solo-movil" id="hintAutoAruco" style="display:none; color:var(--brand); font-weight:600;">🎯 Detectando marcadores ArUco automáticamente…</div>
+    <div class="hint solo-movil" id="hintAutoAruco" style="display:none; color:var(--brand); font-weight:600;">🎯 Detectando Dantix Card automáticamente…</div>
     <div class="btn-row" id="rowCalibAcciones">
       <button class="ghost" type="button" id="btnUndoCorner">Quitar ultimo</button>
       <button class="ghost" type="button" id="btnResetCorners">Reiniciar puntos</button>
-      <button class="ghost solo-escritorio" type="button" id="btnDetectarAruco">🎯 Detectar esquinas con ArUco</button>
+      <button class="ghost solo-escritorio" type="button" id="btnDetectarAruco">🎯 Detectar esquinas con Dantix Card</button>
     </div>
     <div class="dims solo-escritorio" style="margin-top:14px;">
       <label class="field">Marcador total (cm)<input type="number" id="arucoTotalCm" value="9.0" min="1" step="0.1"></label>
       <label class="field">Patrón interno (cm)<input type="number" id="arucoPatronCm" value="6.0" min="1" step="0.1"></label>
     </div>
     <div class="hint solo-escritorio">Usa los IDs 0=Sup-Izq, 1=Sup-Der, 2=Inf-Der, 3=Inf-Izq del PDF que imprimiste. Ajusta los cm si mediste distinto con la regla. Tras detectar, puedes seguir arrastrando cualquier esquina para afinarla.</div>
-    <div class="hint solo-inteligente" style="color:var(--brand); font-weight:600;">🧠 Intelligent Measure: el área del fondo se estima automáticamente a partir del tamaño conocido del marcador ArUco — no hace falta ingresar ancho ni largo.</div>
+    <div class="hint solo-inteligente" style="color:var(--brand); font-weight:600;">🧠 Intelligent Measure: el área del fondo se estima automáticamente a partir del tamaño conocido de la Dantix Card — no hace falta ingresar ancho ni largo.</div>
     <div class="dims dims-manual" style="margin-top:18px;">
       <label class="field">Ancho real (cm)<input type="number" id="anchoCm" value="100" min="1" step="0.1"></label>
       <label class="field">Largo real (cm)<input type="number" id="largoCm" value="150" min="1" step="0.1"></label>
@@ -4265,18 +4362,32 @@ document.getElementById('btnModoMovil').addEventListener('click', () => {
   if(dm) dm.style.display = 'none';
 });
 document.getElementById('btnModoEscritorio').addEventListener('click', () => {
-  document.body.classList.remove('modo-pendiente', 'modo-moldes');
-  document.body.classList.add('modo-escritorio');
+  document.body.classList.remove('modo-pendiente', 'modo-moldes', 'studio-inspeccionar', 'studio-rendimiento');
+  document.body.classList.add('modo-escritorio', 'studio-medir');
   document.getElementById('appTitle').textContent = 'VisionStudio';
   document.getElementById('appSubtitle').textContent = 'Inspección técnica completa — defectos, zonas, moldes, rendimiento y nesting, todo en tu navegador.';
   const dm = document.getElementById('stepDigitalizarMoldes');
   if(dm) dm.style.display = 'none';
+  const aviso = document.getElementById('avisoStudioMovil');
+  if(aviso) aviso.style.display = window.matchMedia('(max-width:820px)').matches ? 'block' : 'none';
+  document.querySelectorAll('.studio-stage-btn').forEach(b => b.classList.toggle('is-on', b.dataset.stage === 'medir'));
+});
+document.getElementById('studioStages') && document.getElementById('studioStages').addEventListener('click', (ev) => {
+  const btn = ev.target.closest('.studio-stage-btn');
+  if(!btn) return;
+  document.body.classList.remove('studio-medir', 'studio-inspeccionar', 'studio-rendimiento');
+  document.body.classList.add('studio-' + btn.dataset.stage);
+  document.querySelectorAll('.studio-stage-btn').forEach(b => b.classList.toggle('is-on', b === btn));
+});
+document.getElementById('btnIrRapidaDesdeStudio') && document.getElementById('btnIrRapidaDesdeStudio').addEventListener('click', () => {
+  const rapida = document.getElementById('btnModoMovil');
+  if(rapida) rapida.click();
 });
 document.getElementById('btnModoInteligente').addEventListener('click', () => {
   document.body.classList.remove('modo-pendiente', 'modo-moldes');
   document.body.classList.add('modo-inteligente');
   document.getElementById('appTitle').textContent = 'Intelligent Measure';
-  document.getElementById('appSubtitle').textContent = 'Mide con solo 4 marcadores ArUco — el área del fondo se estima automáticamente, sin ingresar ancho ni largo.';
+  document.getElementById('appSubtitle').textContent = 'Mide con solo 4 Dantix Card — el área del fondo se estima automáticamente, sin ingresar ancho ni largo.';
   const nmLabel = document.getElementById('nmNombreCueroLabel');
   if(nmLabel) nmLabel.textContent = 'Nombre del material a medir';
   const nmInput = document.getElementById('nmNombreCuero');
@@ -4345,7 +4456,7 @@ document.getElementById('btnIrInicio').addEventListener('click', () => {
 
 function onOpenCvReady(){
   cvReady = true;
-  setStatus('OpenCV listo (detector ArUco propio activo).', 'ok');
+  setStatus('Motor de visión listo.', 'ok');
   document.getElementById('btnDetectarAruco').disabled = false;
   const aviso = document.getElementById('avisoCargandoCv');
   if(aviso) aviso.style.display = 'none';
@@ -4430,13 +4541,15 @@ const baseCanvas = document.createElement('canvas');
 const baseCtx = baseCanvas.getContext('2d');
 
 function fitCanvas(canvas, w, h, maxW){
-  canvas.width = w; canvas.height = h;
-  // width:100% + height:auto deja que el navegador escale manteniendo la proporción real
-  // de la imagen sin importar qué tan angosto sea el contenedor.
+  const movil = window.innerWidth < 900 || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent||'');
+  const MAX = movil ? 2000 : 2800;
+  const scale = Math.min(1, MAX / Math.max(w, h, 1));
+  canvas.width = Math.max(1, Math.round(w * scale));
+  canvas.height = Math.max(1, Math.round(h * scale));
   canvas.style.width = '100%';
   canvas.style.height = 'auto';
   canvas.style.maxWidth = maxW + 'px';
-  return Math.min(1, maxW / w);
+  return scale;
 }
 
 // ---------- STEP 1: cargar imagen ----------
@@ -4454,9 +4567,10 @@ document.getElementById('fileInput').addEventListener('change', (e) => {
 function procesarArchivoImagen(file){
   const img = new Image();
   img.onload = () => {
-    fitCanvas(canvasOriginal, img.width, img.height, 700);
-    const ctx = canvasOriginal.getContext('2d');
-    ctx.drawImage(img, 0, 0, img.width, img.height);
+    const iw = img.naturalWidth || img.width, ih = img.naturalHeight || img.height;
+    fitCanvas(canvasOriginal, iw, ih, 700);
+    const ctx = canvasOriginal.getContext('2d', {alpha:false});
+    ctx.drawImage(img, 0, 0, canvasOriginal.width, canvasOriginal.height);
     if(originalMat) originalMat.delete();
     originalMat = cv.imread(canvasOriginal);
     // guarda una copia "limpia" (sin marcas) para redibujar rápido mientras se arrastra
@@ -4475,7 +4589,7 @@ function procesarArchivoImagen(file){
     // no cambia ningún dato ni cálculo, solo vuelve a "blitear" la misma imagen a pantalla.
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        ctx.drawImage(img, 0, 0, img.width, img.height);
+        ctx.drawImage(img, 0, 0, canvasOriginal.width, canvasOriginal.height);
       });
     });
     if(document.body.classList.contains('modo-movil') || document.body.classList.contains('modo-inteligente')){
@@ -4776,10 +4890,15 @@ function intentarDeteccionAruco(){
   const idsEncontrados = resultado.map(r => r.id);
   const faltantes = necesarios.filter(id => !idsEncontrados.includes(id));
   if(faltantes.length){
-    setStatus(`No se detectaron todos los marcadores. Faltan ID(s): ${faltantes.join(', ')}. `+
-      `Diagnóstico: ${resultadoDet.diagnostico.cuadrados} contornos cuadrados evaluados, `+
-      `${resultadoDet.diagnostico.conBordeOk} con patrón de borde válido, ${resultado.length} decodificados con ID reconocido. `+
-      `Verifica luz pareja (sin sombras fuertes sobre el marcador), enfoque, y que los 4 marcadores estén completos y planos en la foto.`, 'err');
+    const vistas = resultado.length;
+    const nombres = faltantes.map(id => 'tarjeta ' + (id + 1)).join(', ');
+    let msg;
+    if(vistas === 0){
+      msg = 'No vi ninguna Dantix Card. Más luz, sin sombra sobre las tarjetas, y las 4 a la vista.';
+    } else {
+      msg = 'Vi ' + vistas + ' de 4 Dantix Card. Faltan: ' + nombres + '. Acerca un poco, destápalas y que estén planas.';
+    }
+    setStatus(msg, 'err');
     return false;
   }
 
@@ -4838,7 +4957,7 @@ function intentarDeteccionAruco(){
   // muy pronto después de que el paso se hizo visible (flujo automático en móvil).
   requestAnimationFrame(() => { requestAnimationFrame(() => { redrawOriginalWithCorners(); }); });
   updateCornerCount();
-  setStatus('Esquinas detectadas con ArUco (0,1,2,3 encontrados). Puedes arrastrar cualquiera para afinar.', 'ok');
+  setStatus('Esquinas detectadas con Dantix Card. Puedes arrastrar cualquiera para afinar.', 'ok');
 
   // ---- Intelligent Measure: estima el área del fondo solo con la medida del
   // ArUco, sin pedir ancho/largo reales. Las 4 esquinas ya vienen ordenadas
@@ -4858,7 +4977,7 @@ function intentarDeteccionAruco(){
     const largoEst = largoPxProm / escalaProm;
     document.getElementById('anchoCm').value = anchoEst.toFixed(1);
     document.getElementById('largoCm').value = largoEst.toFixed(1);
-    setStatus(`Área del fondo estimada con ArUco: ${anchoEst.toFixed(1)} × ${largoEst.toFixed(1)} cm. Corrigiendo perspectiva...`, 'ok');
+    setStatus(`Área del fondo estimada con Dantix Card: ${anchoEst.toFixed(1)} × ${largoEst.toFixed(1)} cm. Corrigiendo perspectiva...`, 'ok');
     setTimeout(() => { document.getElementById('btnCorregir').click(); }, 30);
   }
   return true;
@@ -4945,7 +5064,7 @@ document.getElementById('btnCorregir').addEventListener('click', () => {
 
 // ---------- STEP 3: calibración de color ----------
 // Tamaño (en px de la imagen corregida) del cuadrado de exclusión en cada
-// esquina, donde puede quedar un resto visible del marcador ArUco aunque la
+// esquina, donde puede quedar un resto visible de la Dantix Card aunque la
 // deteccion de esquinas haya sido correcta (por holgura de impresion, sombra
 // del marcador, etc). Se usa tanto al muestrear el color de fondo como al
 // limpiar la mascara de "manta", para que un marcador nunca se confunda con
@@ -5034,7 +5153,7 @@ function segmentarPorBrillo(){
   th.delete();
 
   // mismo criterio de limpieza que el resto del flujo: anular las esquinas
-  // del marcador ArUco y quedarse solo con el contorno mas grande
+  // de la Dantix Card y quedarse solo con el contorno mas grande
   const zonasArUco = zonasEsquinaArUco(maskManta.cols, maskManta.rows);
   zonasArUco.forEach(z => {
     const roi = maskManta.roi(new cv.Rect(z.x0, z.y0, z.x1-z.x0, z.y1-z.y0));
@@ -8439,6 +8558,11 @@ document.getElementById('btnDescargarRegistroCompleto').addEventListener('click'
   });
 
   // ---------- cargar foto de una pieza ----------
+  document.getElementById('btnOtraPiezaMolde') && document.getElementById('btnOtraPiezaMolde').addEventListener('click', () => {
+    const inp = document.getElementById('moldeFileInput');
+    if(inp){ inp.value = ''; inp.scrollIntoView({behavior:'smooth', block:'center'}); }
+    setStatus('Toma la foto de la siguiente pieza. El DXF final junta todas las de esta sesión.', 'ok');
+  });
   document.getElementById('moldeFileInput').addEventListener('change', (e) => {
     const file = e.target.files[0];
     if(!file) return;
@@ -8448,9 +8572,10 @@ document.getElementById('btnDescargarRegistroCompleto').addEventListener('click'
     }
     const img = new Image();
     img.onload = () => {
-      fitCanvas(canvasMoldeOriginal, img.width, img.height, 700);
-      const ctx = canvasMoldeOriginal.getContext('2d');
-      ctx.drawImage(img, 0, 0, img.width, img.height);
+      const iw = img.naturalWidth || img.width, ih = img.naturalHeight || img.height;
+      fitCanvas(canvasMoldeOriginal, iw, ih, 700);
+      const ctx = canvasMoldeOriginal.getContext('2d', {alpha:false});
+      ctx.drawImage(img, 0, 0, canvasMoldeOriginal.width, canvasMoldeOriginal.height);
       if(moldeOriginalMat) moldeOriginalMat.delete();
       moldeOriginalMat = cv.imread(canvasMoldeOriginal);
       moldeBaseCanvas.width = canvasMoldeOriginal.width;
@@ -8609,7 +8734,7 @@ document.getElementById('btnDescargarRegistroCompleto').addEventListener('click'
     moldeDraggingIndex = -1;
     redrawMoldeOriginalWithCorners();
     actualizarContadorEsquinasMolde();
-    setStatus('Esquinas detectadas con ArUco. Podés arrastrar cualquiera para afinar.', 'ok');
+    setStatus('Esquinas detectadas con Dantix Card. Puedes arrastrar cualquiera para afinar.', 'ok');
   });
 
   // ---------- extraer el contorno de la pieza: corrección de perspectiva + Otsu ----------
@@ -9481,8 +9606,10 @@ document.getElementById('btnDescargarRegistroCompleto').addEventListener('click'
     moldeSegmentosCurvos = {};
     const hintEl = document.getElementById('moldeResultadoHint');
     hintEl.style.display = 'block';
-    hintEl.textContent = `✅ Pieza ${piezasDigitalizadas.length} agregada (${(maxX-minX).toFixed(1)} × ${(maxY-minY).toFixed(1)} cm, ${puntosCm.length} vértices exportados). Carga la foto de la siguiente pieza cuando quieras.`;
-    setStatus(`Pieza ${piezasDigitalizadas.length} digitalizada y agregada a la lista.`, 'ok');
+    hintEl.textContent = '✅ Pieza ' + piezasDigitalizadas.length + ' agregada (' + (maxX-minX).toFixed(1) + ' × ' + (maxY-minY).toFixed(1) + ' cm). Fotografía la siguiente pieza del mismo molde. Al final descarga UN solo DXF con todas.';
+    const otra = document.getElementById('btnOtraPiezaMolde');
+    if(otra) otra.style.display = 'inline-flex';
+    setStatus('Pieza ' + piezasDigitalizadas.length + ' lista. Sigue con la siguiente o descarga el DXF único.', 'ok');
   });
 
   function renderTablaMoldesDigitalizados(){
@@ -9875,7 +10002,31 @@ document.getElementById('btnDescargarRegistroCompleto').addEventListener('click'
   }
 
   if('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')){
-    navigator.serviceWorker.register('./sw.js').catch(() => {});
+    navigator.serviceWorker.register('./sw.js').then((reg) => {
+      const bar = () => {
+        let el = document.getElementById('swUpdateBar');
+        if(!el){
+          el = document.createElement('div');
+          el.id = 'swUpdateBar';
+          el.innerHTML = 'Hay una versión nueva. <button type="button" id="btnSwUpdate">Actualizar</button>';
+          document.body.insertBefore(el, document.body.firstChild);
+          document.getElementById('btnSwUpdate').onclick = () => {
+            if(reg.waiting) reg.waiting.postMessage('SKIP_WAITING');
+            else location.reload();
+          };
+        }
+        el.style.display = 'block';
+      };
+      if(reg.waiting) bar();
+      reg.addEventListener('updatefound', () => {
+        const w = reg.installing;
+        if(!w) return;
+        w.addEventListener('statechange', () => {
+          if(w.state === 'installed' && navigator.serviceWorker.controller) bar();
+        });
+      });
+    }).catch(() => {});
+    navigator.serviceWorker.addEventListener('controllerchange', () => location.reload());
   }
 
   if(standalone){
@@ -9884,7 +10035,7 @@ document.getElementById('btnDescargarRegistroCompleto').addEventListener('click'
   }
 
   if(location.protocol === 'file:'){
-    if(hint) hint.textContent = 'Para instalarla tenés que servirla por HTTPS (o localhost), no abrir el HTML como archivo.';
+    if(hint) hint.textContent = 'Para instalarla hay que abrirla por HTTPS (o localhost), no como archivo HTML.';
     if(btn) btn.disabled = true;
     showCard();
   } else if(isiOS){
@@ -9896,7 +10047,7 @@ document.getElementById('btnDescargarRegistroCompleto').addEventListener('click'
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
-    if(hint) hint.textContent = 'Instalá Dantix como app. El motor y los datos siguen en este dispositivo.';
+    if(hint) hint.textContent = 'Instala Dantix como app. El motor y los datos siguen en este dispositivo.';
     if(btn) btn.style.display = '';
     showCard();
   });
@@ -9905,7 +10056,7 @@ document.getElementById('btnDescargarRegistroCompleto').addEventListener('click'
     if(!deferredPrompt){
       if(hint) hint.textContent = isiOS
         ? 'Safari → Compartir → Agregar a pantalla de inicio.'
-        : 'Si no aparece el diálogo, usá el menú del navegador → Instalar app / Agregar a pantalla de inicio.';
+        : 'Si no aparece el diálogo, usa el menú del navegador → Instalar app / Agregar a pantalla de inicio.';
       return;
     }
     deferredPrompt.prompt();
