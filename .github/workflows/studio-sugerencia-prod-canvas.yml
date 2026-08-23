@@ -1,0 +1,25 @@
+name: Studio sugerencia y canvas prod
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - scripts/lab_studio_y_prod_canvas.py
+      - .github/workflows/studio-sugerencia-prod-canvas.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 scripts/lab_studio_y_prod_canvas.py
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add dantix-vision-lab/index.html dantix-vision-lab/sw.js dantix-vision/index.html dantix-vision/sw.js
+          git diff --cached --stat
+          git commit -m "Lab: Studio no corta pasos. Prod: foto sin cuelgue en esquinas" || echo sin-cambios
+          git push
