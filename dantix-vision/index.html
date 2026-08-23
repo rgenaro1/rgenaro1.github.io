@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Dantix Leather Vision v210</title>
+<title>Dantix Leather Vision v211</title>
 <meta name="description" content="Medición y digitalización de mantas y moldes. 100% en el dispositivo.">
 <meta name="theme-color" content="#0d9d94">
 <meta name="mobile-web-app-capable" content="yes">
@@ -323,6 +323,33 @@
 
   .dlv-solutions{padding:36px 0 8px;}
   .mode-options{display:flex; gap:20px; flex-wrap:wrap; justify-content:center;}
+  .home-group{width:100%; margin-top:8px;}
+  .home-group-label{
+    font-size:11.5px; letter-spacing:0.14em; text-transform:uppercase; font-weight:700;
+    color:var(--brand); margin:18px 0 12px;
+  }
+  .home-group-moldes .home-group-label{color:#c2782a;}
+  .home-mantas .mode-btn{border-left:4px solid var(--brand);}
+  .mode-btn.home-molde{border-left:4px solid #c2782a; max-width:100%; flex:1 1 100%;}
+  .mode-btn.home-molde .mode-btn-icon{background:#f8ead8; color:#c2782a;}
+  .mode-btn.home-molde .mode-btn-sub{color:#c2782a;}
+  .mode-btn.home-molde .mode-btn-cta{color:#c2782a;}
+  .mode-btn-sub{font-size:12.5px; font-weight:600; color:var(--brand); margin:-2px 0 8px;}
+  .mode-btn-chips{display:flex; flex-wrap:wrap; gap:8px; margin:0 0 14px;}
+  .mode-chip{
+    font-size:11px; border:1px solid var(--line); border-radius:999px;
+    padding:4px 10px; color:var(--text-dim); background:var(--surface);
+  }
+  .mode-btn.home-molde .mode-chip{border-color:#e8d0b0; color:#8a5a20;}
+  @media (min-width:960px){
+    .home-mantas{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px;}
+    .home-mantas .mode-btn{max-width:none; flex:none; width:100%;}
+    .home-moldes{display:block;}
+    .mode-btn.home-molde{display:grid; grid-template-columns:auto 1fr auto; grid-template-rows:auto auto auto; column-gap:20px; align-items:center;}
+    .mode-btn.home-molde .mode-btn-icon{grid-row:1 / span 3; margin-bottom:0;}
+    .mode-btn.home-molde .mode-btn-cta{grid-column:3; grid-row:2; justify-self:end;}
+    .mode-btn.home-molde .mode-btn-chips{grid-column:2;}
+  }
   .mode-btn{
     flex:1 1 260px; max-width:320px; border:1px solid var(--line); border-radius:var(--radius-lg);
     padding:28px 24px; background:var(--surface); cursor:pointer; text-align:left; color:var(--text); font-family:inherit;
@@ -751,41 +778,54 @@
     <section class="dlv-solutions" id="dlv-soluciones">
       <div class="dlv-section-head">
         <h2>Elige qué vas a hacer</h2>
-        <p>Manta o molde. Cada tarjeta hace una cosa distinta.</p>
+        <p>Manta o molde. Cada opción hace una cosa distinta.</p>
       </div>
-      <div class="mode-options">
-        <button type="button" class="mode-btn" id="btnModoMovil">
-          <div class="mode-btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg></div>
-          <div class="mode-btn-title">VisionMeasure Mobile</div>
-          <div class="mode-btn-desc">Recepción en planta. Fotografías la manta, marcas las esquinas y obtienes el área.</div>
-          <div class="mode-btn-cta">Comenzar →</div>
-          <div class="mode-btn-tag">Celular · Área · Registro</div>
-        </button>
-        <button type="button" class="mode-btn" id="btnModoEscritorio">
-          <div class="mode-btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
-          <div class="mode-btn-title">VisionStudio</div>
-          <div class="mode-btn-desc">Control en escritorio. Defectos, zonas de la manta y acomodo de corte.</div>
-          <div class="mode-btn-cta">Comenzar →</div>
-          <div class="mode-btn-tag">Escritorio · Calidad · Rendimiento</div>
-        </button>
-        <button type="button" class="mode-btn" id="btnModoInteligente">
-          <div class="mode-btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2a3.5 3.5 0 0 0-3.5 3.5V6a3 3 0 0 0-1.5 5.6 3 3 0 0 0 .9 5A3.5 3.5 0 0 0 9 20.5V21"/><path d="M14.5 2A3.5 3.5 0 0 1 18 5.5V6a3 3 0 0 1 1.5 5.6 3 3 0 0 1-.9 5A3.5 3.5 0 0 1 15 20.5V21"/><path d="M9.5 5a2 2 0 0 1 2-2M9.5 21a2 2 0 0 0 2-2M14.5 5a2 2 0 0 0-2-2M14.5 21a2 2 0 0 1-2-2"/><path d="M8 9h.01M8 14h.01M16 9h.01M16 14h.01M12 6v13"/></svg></div>
-          <div class="mode-btn-title">Intelligent Measure</div>
-          <div class="mode-btn-desc">Medición con Dantix Card. Las 4 tarjetas dan la escala; no ingresas ancho ni largo.</div>
-          <div class="mode-btn-cta">Comenzar →</div>
-          <div class="mode-btn-tag tag-beta">Beta · Dantix Card · Sin cinta</div>
-        </button>
-        <button type="button" class="mode-btn" id="btnModoMoldes">
-          <div class="mode-btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17 10 4l10 3-3 13z"/><circle cx="4" cy="17" r="1.3" fill="currentColor" stroke="none"/><circle cx="10" cy="4" r="1.3" fill="currentColor" stroke="none"/><circle cx="20" cy="7" r="1.3" fill="currentColor" stroke="none"/><circle cx="17" cy="20" r="1.3" fill="currentColor" stroke="none"/></svg></div>
-          <div class="mode-btn-title">Pattern</div>
-          <div class="mode-btn-desc">Piezas de molde a DXF. Para el CAD. Esta opción no mide mantas.</div>
-          <div class="mode-btn-cta">Comenzar →</div>
-          <div class="mode-btn-tag">Molde · Contorno · DXF</div>
-        </button>
+      <div class="home-group">
+        <div class="home-group-label">Mantas</div>
+        <div class="mode-options home-mantas">
+          <button type="button" class="mode-btn" id="btnModoMovil">
+            <div class="mode-btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg></div>
+            <div class="mode-btn-title">Recepción rápida</div>
+            <div class="mode-btn-sub">VisionMeasure</div>
+            <div class="mode-btn-desc">Mide el área desde el celular o la PC y deja el registro.</div>
+            <div class="mode-btn-chips"><span class="mode-chip">Celular o PC</span><span class="mode-chip">Área</span></div>
+            <div class="mode-btn-cta">Empezar →</div>
+          </button>
+          <button type="button" class="mode-btn" id="btnModoEscritorio">
+            <div class="mode-btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h11a1 1 0 0 1 1 1v13H6V7a1 1 0 0 1 1-1h1z"/><path d="M8 6V4h6v2"/><path d="m9 12 2 2 4-4"/></svg></div>
+            <div class="mode-btn-title">Recepción e inspección</div>
+            <div class="mode-btn-sub">VisionStudio</div>
+            <div class="mode-btn-desc">En PC. Mide la manta, clasifica defectos y calcula el rendimiento.</div>
+            <div class="mode-btn-chips"><span class="mode-chip">Solo PC</span><span class="mode-chip">Medición</span><span class="mode-chip">Calidad</span></div>
+            <div class="mode-btn-cta">Empezar →</div>
+          </button>
+          <button type="button" class="mode-btn" id="btnModoInteligente">
+            <div class="mode-btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><rect x="7" y="7" width="10" height="10" rx="1"/></svg></div>
+            <div class="mode-btn-title">Medición con Dantix Card</div>
+            <div class="mode-btn-sub">Intelligent Measure</div>
+            <div class="mode-btn-desc">Mide el área en cualquier sitio, con las 4 tarjetas, sin cinta.</div>
+            <div class="mode-btn-chips"><span class="mode-chip">Dantix Card</span><span class="mode-chip">Sin cinta</span><span class="mode-chip">Beta</span></div>
+            <div class="mode-btn-cta">Empezar →</div>
+          </button>
+        </div>
+      </div>
+      <div class="home-group home-group-moldes">
+        <div class="home-group-label">Moldes</div>
+        <div class="mode-options home-moldes">
+          <button type="button" class="mode-btn home-molde" id="btnModoMoldes">
+            <div class="mode-btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4c-2 2-3 5-2 8 2 5 6 8 10 7 2 0 4-3 3-6-1-4-5-7-8-9"/><path d="M9 9c1 2 3 4 6 5"/></svg></div>
+            <div class="mode-btn-title">Digitalizar moldes</div>
+            <div class="mode-btn-sub">Pattern</div>
+            <div class="mode-btn-desc">Sin escáner. Contorno listo para corte o para tu software de diseño.</div>
+            <div class="mode-btn-chips"><span class="mode-chip">DXF</span><span class="mode-chip">Sin escáner</span></div>
+            <div class="mode-btn-cta">Empezar →</div>
+          </button>
+        </div>
       </div>
     </section>
 
-    <section class="dlv-steps" id="dlv-tecnologia">
+    
+<section class="dlv-steps" id="dlv-tecnologia">
       <div class="dlv-section-head">
         <h2>De la foto al reporte, en cinco pasos.</h2>
         <p>Tomas la foto en planta. El sistema corrige, mide, clasifica y deja el registro.</p>
