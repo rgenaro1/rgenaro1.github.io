@@ -9884,7 +9884,7 @@ document.getElementById('btnDescargarRegistroCompleto').addEventListener('click'
   }
 
   if(location.protocol === 'file:'){
-    if(hint) hint.textContent = 'Para instalarla tenés que servirla por HTTPS (o localhost), no abrir el HTML como archivo.';
+    if(hint) hint.textContent = 'Para instalarla hay que abrirla por HTTPS (o localhost), no como archivo HTML.';
     if(btn) btn.disabled = true;
     showCard();
   } else if(isiOS){
@@ -9896,7 +9896,7 @@ document.getElementById('btnDescargarRegistroCompleto').addEventListener('click'
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
-    if(hint) hint.textContent = 'Instalá Dantix como app. El motor y los datos siguen en este dispositivo.';
+    if(hint) hint.textContent = 'Instala Dantix como app. El motor y los datos siguen en este dispositivo.';
     if(btn) btn.style.display = '';
     showCard();
   });
@@ -9905,7 +9905,7 @@ document.getElementById('btnDescargarRegistroCompleto').addEventListener('click'
     if(!deferredPrompt){
       if(hint) hint.textContent = isiOS
         ? 'Safari → Compartir → Agregar a pantalla de inicio.'
-        : 'Si no aparece el diálogo, usá el menú del navegador → Instalar app / Agregar a pantalla de inicio.';
+        : 'Si no aparece el diálogo, usa el menú del navegador → Instalar app / Agregar a pantalla de inicio.';
       return;
     }
     deferredPrompt.prompt();
