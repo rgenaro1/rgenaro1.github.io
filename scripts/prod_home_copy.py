@@ -6,16 +6,12 @@ t = p.read_text(encoding="utf-8")
 
 repls = [
     (
-        "Para instalarla tenés que servirla por HTTPS (o localhost), no abrir el HTML como archivo.",
-        "Para instalarla hay que abrirla por HTTPS (o localhost), no como archivo HTML.",
+        "Mide solo con 4 marcadores ArUco. No hace falta ingresar ancho ni largo.",
+        "Mide solo con 4 tarjetas Dantix. No hace falta ingresar ancho ni largo.",
     ),
     (
-        "Instalá Dantix como app. El motor y los datos siguen en este dispositivo.",
-        "Instala Dantix como app. El motor y los datos siguen en este dispositivo.",
-    ),
-    (
-        "Si no aparece el diálogo, usá el menú del navegador → Instalar app / Agregar a pantalla de inicio.",
-        "Si no aparece el diálogo, usa el menú del navegador → Instalar app / Agregar a pantalla de inicio.",
+        "Beta · Solo ArUco · Sin medidas manuales",
+        "Beta · Tarjetas Dantix · Sin medidas manuales",
     ),
 ]
 
@@ -24,12 +20,25 @@ for old, new in repls:
     if old in t:
         t = t.replace(old, new, 1)
         changed += 1
-        print("ok", old[:70])
+        print("ok", old)
     else:
-        print("MISSING", old[:80])
+        print("MISSING", old)
+
+t = t.replace(
+    "<title>Dantix Leather Vision v208</title>",
+    "<title>Dantix Leather Vision v209</title>",
+    1,
+)
 
 if changed == 0:
     raise SystemExit("no se aplico ningun cambio")
 
 p.write_text(t, encoding="utf-8")
-print("wrote", p.stat().st_size, "changes", changed)
+print("wrote html", p.stat().st_size, "changes", changed)
+
+sw = Path("dantix-vision/sw.js")
+s = sw.read_text(encoding="utf-8")
+s = s.replace("service worker v208", "service worker v209")
+s = s.replace("dantix-lv-v208-copy-1", "dantix-lv-v209-card-1")
+sw.write_text(s, encoding="utf-8")
+print("wrote sw")
