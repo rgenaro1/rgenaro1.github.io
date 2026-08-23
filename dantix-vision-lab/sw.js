@@ -1,5 +1,5 @@
-/* Dantix Leather Vision — service worker LAB v221 */
-const CACHE = 'dantix-lv-lab-v221-fototeca';
+/* Dantix Leather Vision — service worker LAB v222 */
+const CACHE = 'dantix-lv-lab-v222-studio';
 const PRECACHE = [
   './index.html',
   './manifest.webmanifest',

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Dantix Leather Vision LAB v221</title>
+<title>Dantix Leather Vision LAB v222</title>
 <meta name="description" content="Medición y digitalización de mantas y moldes. 100% en el dispositivo.">
 <meta name="theme-color" content="#0d9d94">
 <meta name="mobile-web-app-capable" content="yes">
@@ -326,22 +326,7 @@
   .home-group{width:100%; margin-top:8px;}
   #labBanner{background:#1a3a36;color:#d6fff8;text-align:center;padding:8px 12px;font-size:13px;font-weight:700;letter-spacing:.04em;}
   #studioStages .studio-stage-btn.is-on{background:var(--brand);color:#fff;border-color:var(--brand);}
-  body.modo-escritorio.studio-medir #step5,
-  body.modo-escritorio.studio-medir #step6,
-  body.modo-escritorio.studio-medir #step7,
-  body.modo-escritorio.studio-medir #step8{display:none !important;}
-  body.modo-escritorio.studio-inspeccionar #step1,
-  body.modo-escritorio.studio-inspeccionar #step2,
-  body.modo-escritorio.studio-inspeccionar #step3,
-  body.modo-escritorio.studio-inspeccionar #step4,
-  body.modo-escritorio.studio-inspeccionar #step7,
-  body.modo-escritorio.studio-inspeccionar #step8{display:none !important;}
-  body.modo-escritorio.studio-rendimiento #step1,
-  body.modo-escritorio.studio-rendimiento #step2,
-  body.modo-escritorio.studio-rendimiento #step3,
-  body.modo-escritorio.studio-rendimiento #step4,
-  body.modo-escritorio.studio-rendimiento #step5,
-  body.modo-escritorio.studio-rendimiento #step6{display:none !important;}
+  /* Studio: las pestañas solo sugieren, no ocultan pasos */
   #swUpdateBar{display:none;position:sticky;top:0;z-index:80;background:#0d9d94;color:#fff;text-align:center;padding:10px 12px;font-weight:700;}
   #swUpdateBar button{margin-left:10px;background:#fff;color:#0d9d94;border:0;border-radius:999px;padding:6px 12px;font-weight:700;cursor:pointer;}
 
@@ -1227,10 +1212,11 @@
   </div>
 
   <div id="avisoStudioMovil" class="solo-escritorio" style="display:none;margin:12px 16px;padding:12px 14px;border:1px solid #e8d0b0;background:#fff8ef;border-radius:12px;">
-    VisionStudio está pensado para PC. En el celular usa Recepción rápida.
+    Sugerencia: VisionStudio se ve mejor en PC. En el celular puedes seguir aquí o usar Recepción rápida.
     <div class="btn-row" style="margin-top:8px;"><button type="button" id="btnIrRapidaDesdeStudio">Ir a recepción rápida</button></div>
   </div>
-  <div id="studioStages" class="solo-escritorio" style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 16px 16px;">
+  <p class="hint solo-escritorio" style="margin:4px 16px 0;">Sugerencia: puedes saltar a esa parte. Los demás pasos (incluido nesting) siguen visibles.</p>
+<div id="studioStages" class="solo-escritorio" style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 16px 16px;">
     <button type="button" class="ghost studio-stage-btn is-on" data-stage="medir">1. Medir</button>
     <button type="button" class="ghost studio-stage-btn" data-stage="inspeccionar">2. Inspeccionar</button>
     <button type="button" class="ghost studio-stage-btn" data-stage="rendimiento">3. Rendimiento</button>
@@ -4375,9 +4361,13 @@ document.getElementById('btnModoEscritorio').addEventListener('click', () => {
 document.getElementById('studioStages') && document.getElementById('studioStages').addEventListener('click', (ev) => {
   const btn = ev.target.closest('.studio-stage-btn');
   if(!btn) return;
-  document.body.classList.remove('studio-medir', 'studio-inspeccionar', 'studio-rendimiento');
-  document.body.classList.add('studio-' + btn.dataset.stage);
   document.querySelectorAll('.studio-stage-btn').forEach(b => b.classList.toggle('is-on', b === btn));
+  const dest = {medir:'step1', inspeccionar:'step5', rendimiento:'step7'}[btn.dataset.stage];
+  const el = dest && document.getElementById(dest);
+  if(el){
+    el.classList.remove('disabled');
+    el.scrollIntoView({behavior:'smooth', block:'start'});
+  }
 });
 document.getElementById('btnIrRapidaDesdeStudio') && document.getElementById('btnIrRapidaDesdeStudio').addEventListener('click', () => {
   const rapida = document.getElementById('btnModoMovil');

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Dantix Leather Vision v213</title>
+<title>Dantix Leather Vision v214</title>
 <meta name="description" content="Medición y digitalización de mantas y moldes. 100% en el dispositivo.">
 <meta name="theme-color" content="#0d9d94">
 <meta name="mobile-web-app-capable" content="yes">
@@ -4495,13 +4495,15 @@ const baseCanvas = document.createElement('canvas');
 const baseCtx = baseCanvas.getContext('2d');
 
 function fitCanvas(canvas, w, h, maxW){
-  canvas.width = w; canvas.height = h;
-  // width:100% + height:auto deja que el navegador escale manteniendo la proporción real
-  // de la imagen sin importar qué tan angosto sea el contenedor.
+  const movil = window.innerWidth < 900 || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent||'');
+  const MAX = movil ? 2000 : 2800;
+  const scale = Math.min(1, MAX / Math.max(w, h, 1));
+  canvas.width = Math.max(1, Math.round(w * scale));
+  canvas.height = Math.max(1, Math.round(h * scale));
   canvas.style.width = '100%';
   canvas.style.height = 'auto';
   canvas.style.maxWidth = maxW + 'px';
-  return Math.min(1, maxW / w);
+  return scale;
 }
 
 // ---------- STEP 1: cargar imagen ----------
@@ -4519,9 +4521,10 @@ document.getElementById('fileInput').addEventListener('change', (e) => {
 function procesarArchivoImagen(file){
   const img = new Image();
   img.onload = () => {
-    fitCanvas(canvasOriginal, img.width, img.height, 700);
-    const ctx = canvasOriginal.getContext('2d');
-    ctx.drawImage(img, 0, 0, img.width, img.height);
+    const iw = img.naturalWidth || img.width, ih = img.naturalHeight || img.height;
+    fitCanvas(canvasOriginal, iw, ih, 700);
+    const ctx = canvasOriginal.getContext('2d', {alpha:false});
+    ctx.drawImage(img, 0, 0, canvasOriginal.width, canvasOriginal.height);
     if(originalMat) originalMat.delete();
     originalMat = cv.imread(canvasOriginal);
     // guarda una copia "limpia" (sin marcas) para redibujar rápido mientras se arrastra
@@ -4540,7 +4543,7 @@ function procesarArchivoImagen(file){
     // no cambia ningún dato ni cálculo, solo vuelve a "blitear" la misma imagen a pantalla.
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        ctx.drawImage(img, 0, 0, img.width, img.height);
+        ctx.drawImage(img, 0, 0, canvasOriginal.width, canvasOriginal.height);
       });
     });
     if(document.body.classList.contains('modo-movil') || document.body.classList.contains('modo-inteligente')){
@@ -8513,9 +8516,10 @@ document.getElementById('btnDescargarRegistroCompleto').addEventListener('click'
     }
     const img = new Image();
     img.onload = () => {
-      fitCanvas(canvasMoldeOriginal, img.width, img.height, 700);
-      const ctx = canvasMoldeOriginal.getContext('2d');
-      ctx.drawImage(img, 0, 0, img.width, img.height);
+      const iw = img.naturalWidth || img.width, ih = img.naturalHeight || img.height;
+      fitCanvas(canvasMoldeOriginal, iw, ih, 700);
+      const ctx = canvasMoldeOriginal.getContext('2d', {alpha:false});
+      ctx.drawImage(img, 0, 0, canvasMoldeOriginal.width, canvasMoldeOriginal.height);
       if(moldeOriginalMat) moldeOriginalMat.delete();
       moldeOriginalMat = cv.imread(canvasMoldeOriginal);
       moldeBaseCanvas.width = canvasMoldeOriginal.width;
@@ -8527,7 +8531,7 @@ document.getElementById('btnDescargarRegistroCompleto').addEventListener('click'
       document.getElementById('moldeResultadoHint').style.display = 'none';
       document.getElementById('moldeSegmentacionBox').style.display = 'none';
       if(moldeMaskLimpia){ moldeMaskLimpia.delete(); moldeMaskLimpia = null; }
-      requestAnimationFrame(() => { requestAnimationFrame(() => { ctx.drawImage(img, 0, 0, img.width, img.height); }); });
+      requestAnimationFrame(() => { requestAnimationFrame(() => { ctx.drawImage(img, 0, 0, canvasMoldeOriginal.width, canvasMoldeOriginal.height); }); });
       setStatus('Foto de pieza cargada. Marca las 4 esquinas del rectángulo de referencia, o detecta con ArUco.', 'ok');
     };
     img.src = URL.createObjectURL(file);

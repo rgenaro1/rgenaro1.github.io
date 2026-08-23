@@ -1,5 +1,5 @@
-/* Dantix Leather Vision — service worker v213 */
-const CACHE = 'dantix-lv-v213-pattern-1';
+/* Dantix Leather Vision — service worker v214 */
+const CACHE = 'dantix-lv-v214-canvas-1';
 const PRECACHE = [
   './index.html',
   './manifest.webmanifest',
