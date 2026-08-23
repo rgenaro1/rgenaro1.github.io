@@ -11,20 +11,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Copiar carpeta de producción a lab
+      - name: Traer LAB v220 (no produccion)
         run: |
           set -euo pipefail
           mkdir -p dantix-vision-lab
-          cp -f dantix-vision/index.html dantix-vision-lab/index.html
-          cp -f dantix-vision/manifest.webmanifest dantix-vision-lab/manifest.webmanifest || true
-          cp -f dantix-vision/sw.js dantix-vision-lab/sw.js || true
-          cp -f dantix-vision/icon.svg dantix-vision-lab/icon.svg || true
-          wc -c dantix-vision-lab/index.html
+          curl -fsSL -o dantix-vision-lab/index.html "https://raw.githubusercontent.com/rgenaro1/dantix-vision-lab/main/index.html"
+          curl -fsSL -o dantix-vision-lab/sw.js "https://raw.githubusercontent.com/rgenaro1/dantix-vision-lab/main/sw.js"
+          grep -o '<title>[^<]*' dantix-vision-lab/index.html | head -1
+          wc -c dantix-vision-lab/index.html dantix-vision-lab/sw.js
       - name: Commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add dantix-vision-lab
+          git add dantix-vision-lab/index.html dantix-vision-lab/sw.js
           git diff --cached --quiet && echo 'sin cambios' && exit 0
-          git commit -m "Lab: copia v206 para probar sin tocar /dantix-vision/"
+          git commit -m "Lab publico: v220 con home nuevo (no toca produccion)"
           git push
