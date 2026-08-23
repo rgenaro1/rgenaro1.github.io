@@ -1,0 +1,32 @@
+name: Prod home copy
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - scripts/prod_home_copy.py
+      - .github/workflows/prod-home-copy.yml
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 scripts/prod_home_copy.py
+      - run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('dantix-vision/sw.js')
+          t = p.read_text(encoding='utf-8')
+          t = t.replace("const CACHE = 'dantix-lv-v207-reset-1';", "const CACHE = 'dantix-lv-v208-copy-1';")
+          t = t.replace('service worker v207', 'service worker v208')
+          p.write_text(t, encoding='utf-8')
+          print('sw cache', [ln for ln in t.splitlines() if 'CACHE' in ln][:1])
+          PY
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add dantix-vision/index.html dantix-vision/sw.js
+          git diff --cached --quiet && echo sin-cambios && exit 0
+          git commit -m "Produccion: home mas claro, sin acento argentino"
+          git push
