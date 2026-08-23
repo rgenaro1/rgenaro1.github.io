@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Dantix Leather Vision v214</title>
+<title>Dantix Leather Vision v222</title>
 <meta name="description" content="Medición y digitalización de mantas y moldes. 100% en el dispositivo.">
 <meta name="theme-color" content="#0d9d94">
 <meta name="mobile-web-app-capable" content="yes">
@@ -324,6 +324,12 @@
   .dlv-solutions{padding:36px 0 8px;}
   .mode-options{display:flex; gap:20px; flex-wrap:wrap; justify-content:center;}
   .home-group{width:100%; margin-top:8px;}
+  #labBanner{background:#1a3a36;color:#d6fff8;text-align:center;padding:8px 12px;font-size:13px;font-weight:700;letter-spacing:.04em;}
+  #studioStages .studio-stage-btn.is-on{background:var(--brand);color:#fff;border-color:var(--brand);}
+  /* Studio: las pestañas solo sugieren, no ocultan pasos */
+  #swUpdateBar{display:none;position:sticky;top:0;z-index:80;background:#0d9d94;color:#fff;text-align:center;padding:10px 12px;font-weight:700;}
+  #swUpdateBar button{margin-left:10px;background:#fff;color:#0d9d94;border:0;border-radius:999px;padding:6px 12px;font-weight:700;cursor:pointer;}
+
   .home-group-label{
     font-size:11.5px; letter-spacing:0.14em; text-transform:uppercase; font-weight:700;
     color:var(--brand); margin:18px 0 12px;
@@ -1004,13 +1010,13 @@
         <h2>Digitalizar piezas del molde con cámara</h2>
       </div>
     </div>
-    <p class="hint">Fotografía cada pieza del molde por separado, con los 4 marcadores ArUco en las esquinas de un rectángulo de referencia (cartulina, cartón, mesa marcada) alrededor de la pieza. Al terminar, descarga todas las piezas digitalizadas en un solo DXF y súbelo donde ya importas tus moldes (paso 07) — ahí le pones el nombre real a cada una.</p>
+    <p class="hint">Fotografía cada pieza del molde por separado, con las 4 Dantix Card en las esquinas de un rectángulo de referencia (cartulina, cartón, mesa marcada) alrededor de la pieza. Al terminar, descarga todas las piezas digitalizadas en un solo DXF y súbelo donde ya importas tus moldes (paso 07) — ahí le pones el nombre real a cada una.</p>
 
     <input type="file" id="moldeFileInput" accept="image/*">
     <section class="capture-guide" aria-label="Guía para fotografiar la pieza">
       <p class="capture-guide-title">✓ Misma base que VisionStudio: foto usable</p>
       <ol>
-        <li>Los 4 ArUco del rectángulo, completos y planos.</li>
+        <li>Las 4 Dantix Card del rectángulo, completas y planas.</li>
         <li>Foto desde arriba, luz pareja, sin sombra dura sobre el borde.</li>
         <li>Toda la pieza dentro del rectángulo, con margen de fondo alrededor.</li>
       </ol>
@@ -1026,7 +1032,7 @@
     <div class="hint">Toca y arrastra para colocar cada esquina del rectángulo de referencia. <b id="moldeCornerCount">0 / 4</b> marcadas.</div>
     <div class="btn-row">
       <button class="ghost" id="btnMoldeResetCorners">Reiniciar puntos</button>
-      <button class="ghost" id="btnMoldeDetectarAruco">🎯 Detectar esquinas con ArUco</button>
+      <button class="ghost" id="btnMoldeDetectarAruco">🎯 Detectar esquinas con Dantix Card</button>
     </div>
     <div class="dims" style="margin-top:14px;">
       <label class="field">Ancho real del rectángulo (cm)<input type="number" id="moldeAnchoCm" value="30" min="1" step="0.1"></label>
@@ -1085,7 +1091,7 @@
       <div class="btn-row" style="margin-top:16px;">
         <button class="ghost" id="btnMoldeExtraerPuntos">✏️ Extraer puntos y ajustar →</button>
       </div>
-      <p class="hint" id="moldePuntosHint" style="display:none;">Arrastrá puntos · toque en una línea agrega vértice · doble clic quita o convierte a curva · manijas naranjas = Bézier. Snap y suavizado en la barra CAD.</p>
+      <p class="hint" id="moldePuntosHint" style="display:none;">Arrastra puntos · toque en una línea agrega vértice · doble clic quita o convierte a curva · manijas naranjas = Bézier. Snap y suavizado en la barra CAD.</p>
       <div class="cad-bar" id="moldeCadBar" style="display:none;">
         <span class="count" id="moldeCadCount">0 pts · 0 curvas</span>
         <label class="cad-zoom">Zoom <input type="range" id="moldeCadZoom" min="100" max="220" value="100"><span id="moldeCadZoomV">100%</span></label>
@@ -1101,6 +1107,7 @@
     </div>
 
     <div class="hint" id="moldeResultadoHint" style="display:none; margin-top:14px; color:var(--brand); font-weight:600;"></div>
+    <button type="button" id="btnOtraPiezaMolde" class="ghost" style="display:none;margin-top:10px;">Digitalizar otra pieza</button>
 
     <div style="margin-top:22px;">
       <h3 style="font-size:14px; font-weight:700; margin:0 0 10px;">Piezas digitalizadas en esta sesión</h3>
@@ -1116,7 +1123,7 @@
         </thead>
         <tbody id="tablaMoldesDigitalizados"></tbody>
       </table>
-      <p class="hint" id="moldeListaVaciaHint" style="margin-top:8px;">Todavía no digitalizaste ninguna pieza en esta sesión.</p>
+      <p class="hint" id="moldeListaVaciaHint" style="margin-top:8px;">Todavía no hay piezas digitalizadas en esta sesión.</p>
     </div>
 
     <div class="btn-row" style="margin-top:16px;">
@@ -1136,7 +1143,7 @@
         </div>
       </div>
     </div>
-    <p class="hint">La primera opción usa arcos (formato R12, la más compatible en general). La segunda conserva las curvas como Bézier/SPLINE reales, sin aproximar — probala si necesitás editar las curvas directamente en tu CAD, pero probá primero que tu programa la abra bien.</p>
+    <p class="hint">La primera opción usa arcos (formato R12, la más compatible en general). La segunda conserva las curvas como Bézier/SPLINE reales, sin aproximar — pruébala si necesitas editar las curvas directamente en tu CAD, pero prueba primero que tu programa la abra bien.</p>
   </div>
 
   <!-- NUEVA RECEPCIÓN: datos generales que aplican a todas las mantas del lote -->
@@ -1203,6 +1210,16 @@
     <div id="rcResumen" style="display:none;"></div>
   </div>
 
+  <div id="avisoStudioMovil" class="solo-escritorio" style="display:none;margin:12px 16px;padding:12px 14px;border:1px solid #e8d0b0;background:#fff8ef;border-radius:12px;">
+    Sugerencia: VisionStudio se ve mejor en PC. En el celular puedes seguir aquí o usar Recepción rápida.
+    <div class="btn-row" style="margin-top:8px;"><button type="button" id="btnIrRapidaDesdeStudio">Ir a recepción rápida</button></div>
+  </div>
+  <p class="hint solo-escritorio" style="margin:4px 16px 0;">Sugerencia: puedes saltar a esa parte. Los demás pasos (incluido nesting) siguen visibles.</p>
+<div id="studioStages" class="solo-escritorio" style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 16px 16px;">
+    <button type="button" class="ghost studio-stage-btn is-on" data-stage="medir">1. Medir</button>
+    <button type="button" class="ghost studio-stage-btn" data-stage="inspeccionar">2. Inspeccionar</button>
+    <button type="button" class="ghost studio-stage-btn" data-stage="rendimiento">3. Rendimiento</button>
+  </div>
   <!-- STEP 1: UPLOAD -->
   <div class="step disabled" id="step1">
     <div class="step-head">
@@ -1213,12 +1230,12 @@
       </div>
       <span class="step-lock">siguiente</span>
     </div>
-    <p class="step-preview">Cuando inicies la recepción podrás cargar la foto acá. Los 4 ArUco tienen que verse enteros.</p>
+    <p class="step-preview">Cuando inicies la recepción podrás cargar la foto acá. Las 4 Dantix Card tienen que verse enteras.</p>
     <input type="file" id="fileInput" accept="image/*">
     <section class="capture-guide" aria-label="Guía para una foto confiable">
       <p class="capture-guide-title">✓ Antes de medir, prepara una foto confiable</p>
       <ol>
-        <li>Ubica los cuatro marcadores ArUco, completos y visibles.</li>
+        <li>Ubica las cuatro Dantix Card, completas y visibles.</li>
         <li>Fotografía desde arriba, con buena luz y sin sombras fuertes.</li>
         <li>Incluye toda la manta y confirma la detección antes de registrar.</li>
       </ol>
@@ -1248,18 +1265,18 @@
       <canvas id="canvasOriginal"></canvas>
     </div>
     <div class="hint">Toca y arrastra para colocar cada esquina — verás una lupa con zoom para ubicarla con precisión. También puedes arrastrar un punto ya puesto para ajustarlo. <b id="cornerCount">0 / 4</b> marcadas.</div>
-    <div class="hint solo-movil" id="hintAutoAruco" style="display:none; color:var(--brand); font-weight:600;">🎯 Detectando marcadores ArUco automáticamente…</div>
+    <div class="hint solo-movil" id="hintAutoAruco" style="display:none; color:var(--brand); font-weight:600;">🎯 Detectando Dantix Card automáticamente…</div>
     <div class="btn-row" id="rowCalibAcciones">
       <button class="ghost" type="button" id="btnUndoCorner">Quitar ultimo</button>
       <button class="ghost" type="button" id="btnResetCorners">Reiniciar puntos</button>
-      <button class="ghost solo-escritorio" type="button" id="btnDetectarAruco">🎯 Detectar esquinas con ArUco</button>
+      <button class="ghost solo-escritorio" type="button" id="btnDetectarAruco">🎯 Detectar esquinas con Dantix Card</button>
     </div>
     <div class="dims solo-escritorio" style="margin-top:14px;">
       <label class="field">Marcador total (cm)<input type="number" id="arucoTotalCm" value="9.0" min="1" step="0.1"></label>
       <label class="field">Patrón interno (cm)<input type="number" id="arucoPatronCm" value="6.0" min="1" step="0.1"></label>
     </div>
     <div class="hint solo-escritorio">Usa los IDs 0=Sup-Izq, 1=Sup-Der, 2=Inf-Der, 3=Inf-Izq del PDF que imprimiste. Ajusta los cm si mediste distinto con la regla. Tras detectar, puedes seguir arrastrando cualquier esquina para afinarla.</div>
-    <div class="hint solo-inteligente" style="color:var(--brand); font-weight:600;">🧠 Intelligent Measure: el área del fondo se estima automáticamente a partir del tamaño conocido del marcador ArUco — no hace falta ingresar ancho ni largo.</div>
+    <div class="hint solo-inteligente" style="color:var(--brand); font-weight:600;">🧠 Intelligent Measure: el área del fondo se estima automáticamente a partir del tamaño conocido de la Dantix Card — no hace falta ingresar ancho ni largo.</div>
     <div class="dims dims-manual" style="margin-top:18px;">
       <label class="field">Ancho real (cm)<input type="number" id="anchoCm" value="100" min="1" step="0.1"></label>
       <label class="field">Largo real (cm)<input type="number" id="largoCm" value="150" min="1" step="0.1"></label>
@@ -4330,18 +4347,36 @@ document.getElementById('btnModoMovil').addEventListener('click', () => {
   if(dm) dm.style.display = 'none';
 });
 document.getElementById('btnModoEscritorio').addEventListener('click', () => {
-  document.body.classList.remove('modo-pendiente', 'modo-moldes');
-  document.body.classList.add('modo-escritorio');
+  document.body.classList.remove('modo-pendiente', 'modo-moldes', 'studio-inspeccionar', 'studio-rendimiento');
+  document.body.classList.add('modo-escritorio', 'studio-medir');
   document.getElementById('appTitle').textContent = 'VisionStudio';
   document.getElementById('appSubtitle').textContent = 'Inspección técnica completa — defectos, zonas, moldes, rendimiento y nesting, todo en tu navegador.';
   const dm = document.getElementById('stepDigitalizarMoldes');
   if(dm) dm.style.display = 'none';
+  const aviso = document.getElementById('avisoStudioMovil');
+  if(aviso) aviso.style.display = window.matchMedia('(max-width:820px)').matches ? 'block' : 'none';
+  document.querySelectorAll('.studio-stage-btn').forEach(b => b.classList.toggle('is-on', b.dataset.stage === 'medir'));
+});
+document.getElementById('studioStages') && document.getElementById('studioStages').addEventListener('click', (ev) => {
+  const btn = ev.target.closest('.studio-stage-btn');
+  if(!btn) return;
+  document.querySelectorAll('.studio-stage-btn').forEach(b => b.classList.toggle('is-on', b === btn));
+  const dest = {medir:'step1', inspeccionar:'step5', rendimiento:'step7'}[btn.dataset.stage];
+  const el = dest && document.getElementById(dest);
+  if(el){
+    el.classList.remove('disabled');
+    el.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+});
+document.getElementById('btnIrRapidaDesdeStudio') && document.getElementById('btnIrRapidaDesdeStudio').addEventListener('click', () => {
+  const rapida = document.getElementById('btnModoMovil');
+  if(rapida) rapida.click();
 });
 document.getElementById('btnModoInteligente').addEventListener('click', () => {
   document.body.classList.remove('modo-pendiente', 'modo-moldes');
   document.body.classList.add('modo-inteligente');
   document.getElementById('appTitle').textContent = 'Intelligent Measure';
-  document.getElementById('appSubtitle').textContent = 'Mide con solo 4 marcadores ArUco — el área del fondo se estima automáticamente, sin ingresar ancho ni largo.';
+  document.getElementById('appSubtitle').textContent = 'Mide con solo 4 Dantix Card — el área del fondo se estima automáticamente, sin ingresar ancho ni largo.';
   const nmLabel = document.getElementById('nmNombreCueroLabel');
   if(nmLabel) nmLabel.textContent = 'Nombre del material a medir';
   const nmInput = document.getElementById('nmNombreCuero');
@@ -4410,7 +4445,7 @@ document.getElementById('btnIrInicio').addEventListener('click', () => {
 
 function onOpenCvReady(){
   cvReady = true;
-  setStatus('OpenCV listo (detector ArUco propio activo).', 'ok');
+  setStatus('Motor de visión listo.', 'ok');
   document.getElementById('btnDetectarAruco').disabled = false;
   const aviso = document.getElementById('avisoCargandoCv');
   if(aviso) aviso.style.display = 'none';
@@ -4844,10 +4879,15 @@ function intentarDeteccionAruco(){
   const idsEncontrados = resultado.map(r => r.id);
   const faltantes = necesarios.filter(id => !idsEncontrados.includes(id));
   if(faltantes.length){
-    setStatus(`No se detectaron todos los marcadores. Faltan ID(s): ${faltantes.join(', ')}. `+
-      `Diagnóstico: ${resultadoDet.diagnostico.cuadrados} contornos cuadrados evaluados, `+
-      `${resultadoDet.diagnostico.conBordeOk} con patrón de borde válido, ${resultado.length} decodificados con ID reconocido. `+
-      `Verifica luz pareja (sin sombras fuertes sobre el marcador), enfoque, y que los 4 marcadores estén completos y planos en la foto.`, 'err');
+    const vistas = resultado.length;
+    const nombres = faltantes.map(id => 'tarjeta ' + (id + 1)).join(', ');
+    let msg;
+    if(vistas === 0){
+      msg = 'No vi ninguna Dantix Card. Más luz, sin sombra sobre las tarjetas, y las 4 a la vista.';
+    } else {
+      msg = 'Vi ' + vistas + ' de 4 Dantix Card. Faltan: ' + nombres + '. Acerca un poco, destápalas y que estén planas.';
+    }
+    setStatus(msg, 'err');
     return false;
   }
 
@@ -4906,7 +4946,7 @@ function intentarDeteccionAruco(){
   // muy pronto después de que el paso se hizo visible (flujo automático en móvil).
   requestAnimationFrame(() => { requestAnimationFrame(() => { redrawOriginalWithCorners(); }); });
   updateCornerCount();
-  setStatus('Esquinas detectadas con ArUco (0,1,2,3 encontrados). Puedes arrastrar cualquiera para afinar.', 'ok');
+  setStatus('Esquinas detectadas con Dantix Card. Puedes arrastrar cualquiera para afinar.', 'ok');
 
   // ---- Intelligent Measure: estima el área del fondo solo con la medida del
   // ArUco, sin pedir ancho/largo reales. Las 4 esquinas ya vienen ordenadas
@@ -4926,7 +4966,7 @@ function intentarDeteccionAruco(){
     const largoEst = largoPxProm / escalaProm;
     document.getElementById('anchoCm').value = anchoEst.toFixed(1);
     document.getElementById('largoCm').value = largoEst.toFixed(1);
-    setStatus(`Área del fondo estimada con ArUco: ${anchoEst.toFixed(1)} × ${largoEst.toFixed(1)} cm. Corrigiendo perspectiva...`, 'ok');
+    setStatus(`Área del fondo estimada con Dantix Card: ${anchoEst.toFixed(1)} × ${largoEst.toFixed(1)} cm. Corrigiendo perspectiva...`, 'ok');
     setTimeout(() => { document.getElementById('btnCorregir').click(); }, 30);
   }
   return true;
@@ -5013,7 +5053,7 @@ document.getElementById('btnCorregir').addEventListener('click', () => {
 
 // ---------- STEP 3: calibración de color ----------
 // Tamaño (en px de la imagen corregida) del cuadrado de exclusión en cada
-// esquina, donde puede quedar un resto visible del marcador ArUco aunque la
+// esquina, donde puede quedar un resto visible de la Dantix Card aunque la
 // deteccion de esquinas haya sido correcta (por holgura de impresion, sombra
 // del marcador, etc). Se usa tanto al muestrear el color de fondo como al
 // limpiar la mascara de "manta", para que un marcador nunca se confunda con
@@ -5102,7 +5142,7 @@ function segmentarPorBrillo(){
   th.delete();
 
   // mismo criterio de limpieza que el resto del flujo: anular las esquinas
-  // del marcador ArUco y quedarse solo con el contorno mas grande
+  // de la Dantix Card y quedarse solo con el contorno mas grande
   const zonasArUco = zonasEsquinaArUco(maskManta.cols, maskManta.rows);
   zonasArUco.forEach(z => {
     const roi = maskManta.roi(new cv.Rect(z.x0, z.y0, z.x1-z.x0, z.y1-z.y0));
@@ -8507,6 +8547,11 @@ document.getElementById('btnDescargarRegistroCompleto').addEventListener('click'
   });
 
   // ---------- cargar foto de una pieza ----------
+  document.getElementById('btnOtraPiezaMolde') && document.getElementById('btnOtraPiezaMolde').addEventListener('click', () => {
+    const inp = document.getElementById('moldeFileInput');
+    if(inp){ inp.value = ''; inp.scrollIntoView({behavior:'smooth', block:'center'}); }
+    setStatus('Toma la foto de la siguiente pieza. El DXF final junta todas las de esta sesión.', 'ok');
+  });
   document.getElementById('moldeFileInput').addEventListener('change', (e) => {
     const file = e.target.files[0];
     if(!file) return;
@@ -8531,7 +8576,7 @@ document.getElementById('btnDescargarRegistroCompleto').addEventListener('click'
       document.getElementById('moldeResultadoHint').style.display = 'none';
       document.getElementById('moldeSegmentacionBox').style.display = 'none';
       if(moldeMaskLimpia){ moldeMaskLimpia.delete(); moldeMaskLimpia = null; }
-      requestAnimationFrame(() => { requestAnimationFrame(() => { ctx.drawImage(img, 0, 0, canvasMoldeOriginal.width, canvasMoldeOriginal.height); }); });
+      requestAnimationFrame(() => { requestAnimationFrame(() => { ctx.drawImage(img, 0, 0, img.width, img.height); }); });
       setStatus('Foto de pieza cargada. Marca las 4 esquinas del rectángulo de referencia, o detecta con ArUco.', 'ok');
     };
     img.src = URL.createObjectURL(file);
@@ -8678,7 +8723,7 @@ document.getElementById('btnDescargarRegistroCompleto').addEventListener('click'
     moldeDraggingIndex = -1;
     redrawMoldeOriginalWithCorners();
     actualizarContadorEsquinasMolde();
-    setStatus('Esquinas detectadas con ArUco. Podés arrastrar cualquiera para afinar.', 'ok');
+    setStatus('Esquinas detectadas con Dantix Card. Puedes arrastrar cualquiera para afinar.', 'ok');
   });
 
   // ---------- extraer el contorno de la pieza: corrección de perspectiva + Otsu ----------
@@ -9550,8 +9595,10 @@ document.getElementById('btnDescargarRegistroCompleto').addEventListener('click'
     moldeSegmentosCurvos = {};
     const hintEl = document.getElementById('moldeResultadoHint');
     hintEl.style.display = 'block';
-    hintEl.textContent = `✅ Pieza ${piezasDigitalizadas.length} agregada (${(maxX-minX).toFixed(1)} × ${(maxY-minY).toFixed(1)} cm, ${puntosCm.length} vértices exportados). Carga la foto de la siguiente pieza cuando quieras.`;
-    setStatus(`Pieza ${piezasDigitalizadas.length} digitalizada y agregada a la lista.`, 'ok');
+    hintEl.textContent = '✅ Pieza ' + piezasDigitalizadas.length + ' agregada (' + (maxX-minX).toFixed(1) + ' × ' + (maxY-minY).toFixed(1) + ' cm). Fotografía la siguiente pieza del mismo molde. Al final descarga UN solo DXF con todas.';
+    const otra = document.getElementById('btnOtraPiezaMolde');
+    if(otra) otra.style.display = 'inline-flex';
+    setStatus('Pieza ' + piezasDigitalizadas.length + ' lista. Sigue con la siguiente o descarga el DXF único.', 'ok');
   });
 
   function renderTablaMoldesDigitalizados(){
@@ -9944,7 +9991,31 @@ document.getElementById('btnDescargarRegistroCompleto').addEventListener('click'
   }
 
   if('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')){
-    navigator.serviceWorker.register('./sw.js').catch(() => {});
+    navigator.serviceWorker.register('./sw.js').then((reg) => {
+      const bar = () => {
+        let el = document.getElementById('swUpdateBar');
+        if(!el){
+          el = document.createElement('div');
+          el.id = 'swUpdateBar';
+          el.innerHTML = 'Hay una versión nueva. <button type="button" id="btnSwUpdate">Actualizar</button>';
+          document.body.insertBefore(el, document.body.firstChild);
+          document.getElementById('btnSwUpdate').onclick = () => {
+            if(reg.waiting) reg.waiting.postMessage('SKIP_WAITING');
+            else location.reload();
+          };
+        }
+        el.style.display = 'block';
+      };
+      if(reg.waiting) bar();
+      reg.addEventListener('updatefound', () => {
+        const w = reg.installing;
+        if(!w) return;
+        w.addEventListener('statechange', () => {
+          if(w.state === 'installed' && navigator.serviceWorker.controller) bar();
+        });
+      });
+    }).catch(() => {});
+    navigator.serviceWorker.addEventListener('controllerchange', () => location.reload());
   }
 
   if(standalone){
