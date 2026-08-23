@@ -1,0 +1,25 @@
+name: Promover lab a produccion
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - scripts/promover_lab_a_prod.py
+      - .github/workflows/promover-lab-a-prod.yml
+
+permissions:
+  contents: write
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 scripts/promover_lab_a_prod.py
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add dantix-vision/index.html dantix-vision/sw.js
+          git diff --cached --stat
+          git commit -m "Produccion v222: misma app que el laboratorio (sin franja de prueba)" || echo sin-cambios
+          git push
