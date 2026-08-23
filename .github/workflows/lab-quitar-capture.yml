@@ -1,0 +1,43 @@
+name: Lab quitar capture camara
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/lab-quitar-capture.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Quitar capture=environment
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('dantix-vision-lab/index.html')
+          t = p.read_text(encoding='utf-8')
+          n = t.count('capture="environment"')
+          t = t.replace(' capture="environment"', '')
+          t = t.replace('<title>Dantix Leather Vision LAB v220</title>', '<title>Dantix Leather Vision LAB v221</title>')
+          p.write_text(t, encoding='utf-8')
+          sw = Path('dantix-vision-lab/sw.js')
+          s = sw.read_text(encoding='utf-8')
+          s = s.replace('LAB v220', 'LAB v221')
+          s = s.replace('dantix-lv-lab-v220-mejoras-1', 'dantix-lv-lab-v221-fototeca')
+          sw.write_text(s, encoding='utf-8')
+          print('removed', n)
+          PY
+          grep -n 'capture=' dantix-vision-lab/index.html || echo 'sin capture'
+          grep -o '<title>[^<]*' dantix-vision-lab/index.html | head -1
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add dantix-vision-lab/index.html dantix-vision-lab/sw.js
+          git diff --cached --quiet && echo 'sin cambios' && exit 0
+          git commit -m "Lab: selector de foto otra vez (camara, fototeca o archivos)"
+          git push
