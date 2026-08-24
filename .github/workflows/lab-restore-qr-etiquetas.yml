@@ -1,0 +1,25 @@
+name: Lab restaurar QR produccion
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - scripts/lab_restore_qr_etiquetas.py
+      - .github/workflows/lab-restore-qr-etiquetas.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 scripts/lab_restore_qr_etiquetas.py
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add dantix-vision-lab/index.html dantix-vision-lab/sw.js
+          git diff --cached --stat
+          git commit -m "Lab v228: hoja QR igual a produccion (etiquetas 3x6, sin aviso)" || echo sin-cambios
+          git push
