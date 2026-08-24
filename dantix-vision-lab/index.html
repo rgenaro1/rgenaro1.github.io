@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Dantix Leather Vision LAB v225</title>
+<title>Dantix Leather Vision LAB v226</title>
 <meta name="description" content="Medición y digitalización de mantas y moldes. 100% en el dispositivo.">
 <meta name="theme-color" content="#0d9d94">
 <meta name="mobile-web-app-capable" content="yes">
@@ -8157,21 +8157,37 @@ document.getElementById('btnDescargarRegistroCompleto').addEventListener('click'
       <div class="btn-row">
         <button type="button" id="btnGenerarReporte">📄 Generar reporte (PDF)</button>
         <button type="button" class="ghost" id="btnDescargarCsvRecepcion">Descargar CSV</button>
-        <button type="button" class="ghost" id="btnDescargarEtiquetasRecepcion">🏷️ PDF manta + QR (1 hoja c/u)</button>
+        <button type="button" class="ghost" id="btnDescargarQrManta">QR-Manta</button>
       </div>
       <div class="hint" id="avisoGenerando" style="display:none; margin-top:10px;">⏳ Generando…</div>
       <div class="btn-row" style="margin-top:16px; border-top:1px dashed var(--line-strong); padding-top:16px;">
         <button type="button" class="btn-primary-lg" id="btnEmpezarNuevaRecepcion">🆕 Empezar una nueva recepción</button>
       </div>
     `;
-    document.getElementById('btnGenerarReporte').addEventListener('click', () => generarUnDocumento(generarPDFReporte, 'reporte'));
-    document.getElementById('btnDescargarCsvRecepcion').addEventListener('click', () => generarUnDocumento(async (rec) => {
-      descargarBlob(new Blob([generarCSVRecepcion(rec)], {type:'text/csv'}), `${rec.codigo}.csv`);
-    }, 'csv'));
-    document.getElementById('btnDescargarEtiquetasRecepcion').addEventListener('click', () => generarUnDocumento(generarPDFEtiquetas, 'etiquetas'));
-    document.getElementById('btnEmpezarNuevaRecepcion').addEventListener('click', () => {
-      if(typeof iniciarNuevaRecepcionCompleta === 'function') iniciarNuevaRecepcionCompleta();
-    });
+    // Delegación: un solo listener estable en #rcResumen (no se pierde al regenerar HTML)
+    if(!resumen._dantixDocBound){
+      resumen._dantixDocBound = true;
+      resumen.addEventListener('click', (ev) => {
+        const btn = ev.target && ev.target.closest ? ev.target.closest('button') : null;
+        if(!btn) return;
+        const id = btn.id || '';
+        if(id === 'btnGenerarReporte'){
+          ev.preventDefault();
+          generarUnDocumento(generarPDFReporte, 'reporte');
+        } else if(id === 'btnDescargarCsvRecepcion'){
+          ev.preventDefault();
+          generarUnDocumento(function(rec){
+            descargarBlob(new Blob([generarCSVRecepcion(rec)], {type:'text/csv;charset=utf-8'}), (rec.codigo || 'recepcion') + '.csv');
+          }, 'csv');
+        } else if(id === 'btnDescargarQrManta' || id === 'btnDescargarEtiquetasRecepcion'){
+          ev.preventDefault();
+          generarUnDocumento(generarPDFEtiquetas, 'etiquetas');
+        } else if(id === 'btnEmpezarNuevaRecepcion'){
+          ev.preventDefault();
+          if(typeof iniciarNuevaRecepcionCompleta === 'function') iniciarNuevaRecepcionCompleta();
+        }
+      });
+    }
     resumen.scrollIntoView({behavior:'smooth', block:'start'});
   });
 
@@ -8216,11 +8232,11 @@ document.getElementById('btnDescargarRegistroCompleto').addEventListener('click'
   // del body), así que no dependen de ningún servidor externo. asegurarQRCode/asegurarJsPDF
   // se mantienen como funciones (ahora triviales) para no tener que tocar el resto del código
   // que ya las usa.
-  async function asegurarQRCode(){
+  function asegurarQRCode(){
     if(typeof qrcode === 'undefined') throw new Error('El generador de QR no está disponible en este archivo.');
   }
-  async function asegurarJsPDF(){
-    if(!window.jspdf) throw new Error('El generador de PDF no está disponible en este archivo.');
+  function asegurarJsPDF(){
+    if(!window.jspdf || !window.jspdf.jsPDF) throw new Error('El generador de PDF no está disponible en este archivo.');
   }
 
   // ---------- QR ----------
@@ -8261,7 +8277,7 @@ document.getElementById('btnDescargarRegistroCompleto').addEventListener('click'
 
   // ---------- PDF: reporte de recepción ----------
   async function generarPDFReporte(rec){
-    await asegurarJsPDF();
+    asegurarJsPDF();
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({unit:'pt', format:'a4'});
     const pageW = doc.internal.pageSize.getWidth();
@@ -8358,8 +8374,8 @@ document.getElementById('btnDescargarRegistroCompleto').addEventListener('click'
 
   // ---------- PDF: hoja de etiquetas QR ----------
   async function generarPDFEtiquetas(rec){
-    await asegurarJsPDF();
-    await asegurarQRCode();
+    asegurarJsPDF();
+    asegurarQRCode();
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({unit:'pt', format:'a4'});
     const pageW = doc.internal.pageSize.getWidth();
@@ -8380,7 +8396,7 @@ document.getElementById('btnDescargarRegistroCompleto').addEventListener('click'
 
       let qrUrl = m.qrDataUrl || null;
       if(!qrUrl){
-        try{ qrUrl = await generarQRDataURL(m.codigo); }catch(e){}
+        try{ qrUrl = generarQRDataURL(m.codigo); }catch(e){}
       }
       const qrSize = 78;
       const qrX = pageW - margin - qrSize;
@@ -8445,16 +8461,27 @@ document.getElementById('btnDescargarRegistroCompleto').addEventListener('click'
 // ---------- Generar un documento individual (usado por los 3 botones) ----------
   async function generarUnDocumento(fn, tipo){
     const rec = window._recepcion;
-    if(!rec || !rec.mantas.length) return;
+    if(!rec || !rec.mantas || !rec.mantas.length){
+      setStatus('No hay mantas en la recepción para generar el documento.', 'err');
+      return;
+    }
     const aviso = document.getElementById('avisoGenerando');
     if(aviso) aviso.style.display = 'block';
     try{
-      await fn(rec);
-      const nombres = {reporte:'Reporte PDF generado.', csv:'CSV descargado.', etiquetas:'PDF de mantas con QR generado.'};
+      // Ejecutar de forma síncrona lo posible para no perder el gesto de descarga en móviles
+      const ret = fn(rec);
+      if(ret && typeof ret.then === 'function') await ret;
+      const nombres = {
+        reporte: 'Reporte PDF generado.',
+        csv: 'CSV descargado.',
+        etiquetas: 'PDF QR-Manta generado.'
+      };
       setStatus(nombres[tipo] || 'Documento generado.', 'ok');
     } catch(e){
-      console.error(e);
-      setStatus(e && e.message ? e.message : 'Ocurrió un problema generando el documento. Vuelve a intentarlo.', 'err');
+      console.error('generarUnDocumento', tipo, e);
+      const msg = (e && e.message) ? e.message : 'Ocurrió un problema generando el documento.';
+      setStatus(msg, 'err');
+      try { alert('No se pudo generar el documento:\n' + msg); } catch(_){}
     } finally {
       if(aviso) aviso.style.display = 'none';
     }
