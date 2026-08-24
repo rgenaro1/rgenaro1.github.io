@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Dantix Leather Vision v222</title>
+<title>Dantix Leather Vision v223</title>
 <meta name="description" content="Medición y digitalización de mantas y moldes. 100% en el dispositivo.">
 <meta name="theme-color" content="#0d9d94">
 <meta name="mobile-web-app-capable" content="yes">
@@ -8449,6 +8449,20 @@ document.getElementById('btnDescargarRegistroCompleto').addEventListener('click'
     window._recepcion = null;
     window._nuevaMantaDatos = null;
     window._nuevaMantaCreada = false;
+    window._ultimoNestImage = null;
+    window._ultimoNestPares = null;
+    try {
+      if (typeof registroCompleto !== 'undefined' && Array.isArray(registroCompleto)) {
+        registroCompleto.length = 0;
+        if (typeof renderLogCompleto === 'function') renderLogCompleto();
+      }
+    } catch (e) {}
+    const logWrap = document.getElementById('logCompletoWrap');
+    if (logWrap) {
+      logWrap.style.display = 'none';
+      const logBody = document.getElementById('logCompletoBody');
+      if (logBody) logBody.innerHTML = '';
+    }
     try { localStorage.removeItem(STORAGE_KEY); } catch(e) { /* noop */ }
 
     ['nmEmpresa','nmCurtiembre','nmProveedor','nmNombreCuero','nmColor','nmEspesor','nmOperario','nmObservaciones'].forEach(id => {
