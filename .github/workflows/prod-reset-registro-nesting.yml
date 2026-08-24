@@ -1,0 +1,25 @@
+name: Prod reset cuadro NESTING
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - scripts/prod_reset_registro_nesting.py
+      - .github/workflows/prod-reset-registro-nesting.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 scripts/prod_reset_registro_nesting.py
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add dantix-vision/index.html dantix-vision/sw.js
+          git diff --cached --stat
+          git commit -m "Produccion v223: limpiar cuadro NESTING al iniciar nueva recepcion" || echo sin-cambios
+          git push
